@@ -1,0 +1,231 @@
+<!-- Maven项目定义文件 -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <!-- Maven模型版本 -->
+  <modelVersion>4.0.0</modelVersion>
+
+  <!-- 项目坐标 -->
+  <groupId>com.lijian</groupId>
+  <artifactId>AI-interviewer</artifactId>
+  <!-- 使用变量定义版本号便于统一管理 -->
+  <version>${revision}</version>
+  <!-- 定义为父模块 -->
+  <packaging>pom</packaging>
+
+  <!-- 项目基本信息 -->
+  <name>AI-interviewer</name>
+  <url>http://127.0.0.1:8080</url>
+
+  <!-- 项目属性定义 -->
+  <properties>
+    <!-- 项目版本号 -->
+    <revision>1.0.0</revision>
+
+    <!-- 基本配置 -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <java.version>17</java.version>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+
+    <!-- Spring AI版本 -->
+    <spring-ai.version>1.0.0-M6</spring-ai.version>
+
+    <!-- Spring AI Alibaba版本 -->
+    <spring-ai-alibaba.version>1.0.0-M6.1</spring-ai-alibaba.version>
+
+    <!-- Spring Boot版本 -->
+    <spring-boot.version>3.4.0</spring-boot.version>
+
+    <!-- Maven插件版本 -->
+    <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
+    <flatten-maven-plugin.version>1.3.0</flatten-maven-plugin.version>
+    <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+  </properties>
+
+  <!-- 子模块定义 -->
+  <modules>
+    <!-- 暂无子模块 -->
+  </modules>
+
+  <!-- 项目直接依赖 -->
+  <dependencies>
+    <!-- 暂无直接依赖 -->
+  </dependencies>
+
+  <!-- 依赖管理 -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- Lombok依赖（已注释） -->
+      <!--    <dependency>-->
+      <!--      <groupId>org.projectlombok</groupId>-->
+      <!--      <artifactId>lombok</artifactId>-->
+      <!--      <scope>provided</scope>-->
+      <!--      <optional>true</optional>-->
+      <!--    </dependency>-->
+
+      <!-- Spring Boot依赖管理 -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${spring-boot.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- Spring AI依赖管理 -->
+      <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-bom</artifactId>
+        <version>${spring-ai.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+      <!-- 阿里巴巴Spring AI依赖 -->
+      <dependency>
+        <groupId>com.alibaba.cloud.ai</groupId>
+        <artifactId>spring-ai-alibaba-starter</artifactId>
+        <version>${spring-ai-alibaba.version}</version>
+      </dependency>
+
+      <!-- Redis依赖 -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-redis</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
+
+    </dependencies>
+  </dependencyManagement>
+
+  <!-- 构建配置 -->
+  <build>
+    <plugins>
+      <!-- Spring Boot Maven插件 -->
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <version>${spring-boot.version}</version>
+      </plugin>
+
+      <!-- Maven部署插件 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>${maven-deploy-plugin.version}</version>
+        <configuration>
+          <skip>true</skip>
+        </configuration>
+      </plugin>
+
+      <!-- Maven编译插件 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-plugin.version}</version>
+        <configuration>
+          <release>${java.version}</release>
+          <compilerArgs>
+            <!-- 保留方法参数名 -->
+            <compilerArg>-parameters</compilerArg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+
+      <!-- Maven扁平化插件 - 处理版本变量 -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>flatten-maven-plugin</artifactId>
+        <version>${flatten-maven-plugin.version}</version>
+        <inherited>true</inherited>
+        <executions>
+          <execution>
+            <id>flatten</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>flatten</goal>
+            </goals>
+            <configuration>
+              <updatePomFile>true</updatePomFile>
+              <flattenMode>ossrh</flattenMode>
+              <pomElements>
+                <distributionManagement>remove</distributionManagement>
+                <dependencyManagement>remove</dependencyManagement>
+                <repositories>remove</repositories>
+                <scm>keep</scm>
+                <url>keep</url>
+                <organization>resolve</organization>
+              </pomElements>
+            </configuration>
+          </execution>
+          <execution>
+            <id>flatten.clean</id>
+            <phase>clean</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- 远程仓库配置 -->
+  <repositories>
+    <!-- Spring里程碑版本仓库 -->
+    <repository>
+      <id>spring-milestones</id>
+      <name>Spring Milestones</name>
+      <url>https://repo.spring.io/milestone</url>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+
+    <!-- Spring快照版本仓库 -->
+    <repository>
+      <id>spring-snapshots</id>
+      <name>Spring Snapshots</name>
+      <url>https://repo.spring.io/snapshot</url>
+      <releases>
+        <enabled>false</enabled>
+      </releases>
+    </repository>
+
+    <!-- Sonatype开源仓库 -->
+    <repository>
+      <id>sonatype</id>
+      <name>OSS Sonatype</name>
+      <url>https://oss.sonatype.org/content/groups/public/</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+
+    <!-- 阿里云Maven仓库 -->
+    <repository>
+      <id>aliyunmaven</id>
+      <name>aliyun</name>
+      <url>https://maven.aliyun.com/repository/public</url>
+    </repository>
+  </repositories>
+
+  <!-- 插件仓库配置 -->
+  <pluginRepositories>
+    <!-- 阿里云插件仓库 -->
+    <pluginRepository>
+      <id>public</id>
+      <name>aliyun nexus</name>
+      <url>https://maven.aliyun.com/repository/public</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </pluginRepository>
+  </pluginRepositories>
+</project>
