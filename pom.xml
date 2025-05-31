@@ -55,8 +55,8 @@
   <modules>
 
     <module>common</module>
-    <module>interview</module>
-    <module>user</module>
+    <module>interview-service</module>
+    <module>user-service</module>
     <module>ai-core</module>
     <module>web</module>
     <module>web</module>
@@ -80,12 +80,12 @@
       </dependency>
       <dependency>
         <groupId>com.lijian</groupId>
-        <artifactId>user</artifactId>
+        <artifactId>user-service</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>
         <groupId>com.lijian</groupId>
-        <artifactId>interview</artifactId>
+        <artifactId>interview-service</artifactId>
         <version>${revision}</version>
       </dependency>
       <dependency>

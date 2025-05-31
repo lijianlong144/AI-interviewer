@@ -4,13 +4,13 @@
     <parent>
         <groupId>com.lijian</groupId>
         <artifactId>AI-interviewer</artifactId>
-        <version>${revision}</version>
+        <version>1.0.0</version>
     </parent>
 
-    <artifactId>web</artifactId>
+    <artifactId>user-service</artifactId>
     <packaging>jar</packaging>
 
-    <name>web</name>
+    <name>user</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -23,23 +23,18 @@
             <artifactId>common</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lijian</groupId>
-            <artifactId>user-service</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lijian</groupId>
-            <artifactId>interview-service</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.lijian</groupId>
-            <artifactId>ai-core</artifactId>
-        </dependency>
-
-        <!-- MySQL -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.33</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

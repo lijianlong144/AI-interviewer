@@ -5,12 +5,12 @@
     <file url="file://$PROJECT_DIR$/ai-core/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/common/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/common/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/interview/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/interview/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/interview-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/interview-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/user/src/main/java" charset="UTF-8" />
-    <file url="file://$PROJECT_DIR$/user/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/user-service/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/web/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/web/src/main/resources" charset="UTF-8" />
   </component>
