@@ -1,5 +1,10 @@
 package com.lijian.result;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +13,11 @@ import java.io.Serializable;
  * @author lijian
  * @since 1.0.0
  */
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode
 public class Result<T> implements Serializable {
     
     private static final long serialVersionUID = 1L;

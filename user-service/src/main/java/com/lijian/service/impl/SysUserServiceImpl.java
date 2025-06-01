@@ -55,13 +55,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public SysUser getByUsername(String username) {
+        // 检查用户名是否为空
         LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysUser::getUsername, username);
         return this.getOne(queryWrapper);
     }
     
     /**
-     * 获取用户详情，包括角色信息
+     * 根据userid获取用户详情，包括角色信息
      * 
      * @param userId 用户ID
      * @return 用户详情
@@ -76,7 +77,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         
         // 查询用户角色
         List<SysRole> roles = getUserRoles(userId);
-        
+        user.setRoles(roles);
         // 不返回密码
         user.setPassword(null);
         
@@ -98,7 +99,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (existUser != null) {
             throw new BusinessException("用户名已存在");
         }
-        
+
         // 检查邮箱是否已存在
         if (StringUtils.hasText(user.getEmail())) {
             LambdaQueryWrapper<SysUser> queryWrapper = new LambdaQueryWrapper<>();
@@ -111,7 +112,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         
         // 密码加密
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        
+
         // 设置默认状态
         user.setStatus(StatusEnum.ENABLED.getCode());
         
@@ -128,9 +129,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         
         if (!CollectionUtils.isEmpty(roleIds)) {
-            assignRoles(user.getId(), roleIds);
+                assignRoles(user.getId(), roleIds);
         }
-        
+
         return user;
     }
     
@@ -372,7 +373,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
     
     /**
-     * 获取用户角色列表
+     * 根据userId获取用户角色列表
      * 
      * @param userId 用户ID
      * @return 角色列表
@@ -383,7 +384,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         LambdaQueryWrapper<SysUserRole> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(SysUserRole::getUserId, userId);
         List<SysUserRole> userRoles = userRoleMapper.selectList(queryWrapper);
-        
+        // 如果没有角色关联，返回空列表
         if (CollectionUtils.isEmpty(userRoles)) {
             return new ArrayList<>();
         }

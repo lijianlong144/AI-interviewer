@@ -141,6 +141,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     public boolean updateRoleStatus(Long roleId, Integer status) {
         // 检查角色是否存在
+
         SysRole role = this.getById(roleId);
         if (role == null) {
             throw new BusinessException("角色不存在");

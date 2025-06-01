@@ -53,12 +53,10 @@
 
   <!-- 子模块定义 -->
   <modules>
-
     <module>common</module>
     <module>interview-service</module>
     <module>user-service</module>
     <module>ai-core</module>
-    <module>web</module>
     <module>web</module>
   </modules>
 
@@ -140,7 +138,7 @@
       </dependency>
       <dependency>
         <groupId>com.baomidou</groupId>
-        <artifactId>mybatis-plus-boot-starter</artifactId>
+        <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
         <version>${mybatis-plus.version}</version>
       </dependency>
 
@@ -228,6 +226,11 @@
 
   <!-- 远程仓库配置 -->
   <repositories>
+
+    <repository>
+      <id>snapshots</id>
+      <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+    </repository>
     <!-- Spring里程碑版本仓库 -->
     <repository>
       <id>spring-milestones</id>
