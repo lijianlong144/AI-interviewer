@@ -1,5 +1,6 @@
 package com.lijian.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.lijian.BaseEntity;
 import lombok.Data;
@@ -22,7 +23,9 @@ public class Question extends BaseEntity {
      * 题目详细内容
      */
     private String content;
-    
+//    @TableName
+    @TableField("category_id")
+    private Long categoryId;
     /**
      * 题型：TECHNICAL/BEHAVIORAL/SITUATIONAL
      */
