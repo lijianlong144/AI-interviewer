@@ -1,9 +1,9 @@
 server:
   port: 8083
+
 spring:
   application:
     name: ai-interviewer
-
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -18,14 +18,20 @@ spring:
   ai:
     dashscope:
       api-key: ${AI_DASHSCOPE_API_KEY}
-#  data:
-#    redis:
-#      host: localhost
-#      port: 6379
-#      database: 0
+
+  # 删除这部分，这是OAuth2的配置，不是我们用的JWT
+  # security:
+  #   oauth2:
+  #     resourceserver:
+  #       jwt:
+  #         jws-algorithms:
+
+# JWT配置 - 这是自定义的配置
+jwt:
+  secret: AI-interviewer-secret-key-2024-this-is-a-very-long-secret-key
+  expiration: 86400 # 24小时，单位：秒
 
 mybatis-plus:
-#  mapper-locations: classpath*:mapper/**/*.xml
   type-aliases-package: com.lijian.**.entity
   configuration:
     map-underscore-to-camel-case: true
