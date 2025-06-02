@@ -2,7 +2,6 @@ package com.lijian.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lijian.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -24,8 +23,8 @@ public class Question extends BaseEntity {
      */
     private String content;
 //    @TableName
-    @TableField("category_id")
-    private Long categoryId;
+//    @TableField("category_id")
+//    private Long categoryId;
     /**
      * 题型：TECHNICAL/BEHAVIORAL/SITUATIONAL
      */
@@ -44,12 +43,13 @@ public class Question extends BaseEntity {
     /**
      * 标签，逗号分隔
      */
+    @TableField(exist = false)
     private String tags;
     
     /**
      * 参考答案
      */
-    private String referenceAnswer;
+    private String standardAnswer;
     
     /**
      * 关键词，逗号分隔
@@ -70,4 +70,5 @@ public class Question extends BaseEntity {
      * 状态：0-禁用 1-启用
      */
     private Integer status;
+    private Integer isDeleted;
 } 

@@ -1,7 +1,6 @@
 package com.lijian.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.lijian.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

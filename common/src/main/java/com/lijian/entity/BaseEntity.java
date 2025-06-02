@@ -1,4 +1,4 @@
-package com.lijian;
+package com.lijian.entity;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
