@@ -159,7 +159,7 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
         }
 
         interview.setStatus(InterviewStatusEnum.CANCELLED.getCode());
-        // 这里可以记录取消原因，如果数据库有对应字段的话
+        // 可以记录取消原因，如果数据库有对应字段的话
 
         return updateById(interview);
     }
@@ -224,7 +224,7 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
         if (interview == null) {
             throw new BusinessException("面试不存在");
         }
-
+// 应该要改，以及TODO： 60是写死的默认值，后续要改，从外面传进来
         if (InterviewStatusEnum.COMPLETED.getCode().equals(interview.getStatus()) ||
                 InterviewStatusEnum.CANCELLED.getCode().equals(interview.getStatus())) {
             throw new BusinessException("已完成或已取消的面试无法重新安排");

@@ -28,7 +28,7 @@ public class Interview extends BaseEntity {
     /**
      * 候选人姓名
      */
-    private String candidateName;
+//    private String candidateName;
     
     /**
      * 应聘职位
@@ -39,6 +39,11 @@ public class Interview extends BaseEntity {
      * 面试官ID
      */
     private Long interviewerId;
+    
+    /**
+     * 创建人ID
+     */
+    private Long creatorId;
     
     /**
      * 预约时间

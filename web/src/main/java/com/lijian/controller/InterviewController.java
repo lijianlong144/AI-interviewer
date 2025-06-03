@@ -32,6 +32,10 @@ public class InterviewController {
      */
     @PostMapping
     public Result<Interview> createInterview(@Valid @RequestBody Interview interview) {
+        // 设置创建者ID为当前登录用户ID
+        Long currentUserId = com.lijian.utils.SecurityUtils.getCurrentUserId();
+        interview.setCreatorId(currentUserId);
+        
         Interview createdInterview = interviewService.createInterview(interview);
         return Result.success(createdInterview);
     }
@@ -76,12 +80,12 @@ public class InterviewController {
      * 分页查询面试列表
      */
     @GetMapping("/page")
-    public Result<Page<Interview>> pageInterviews(@RequestParam(defaultValue = "1") Integer current,
-                                                  @RequestParam(defaultValue = "10") Integer size,
-                                                  @RequestParam(required = false) String status,
-                                                  @RequestParam(required = false) String position,
-                                                  @RequestParam(required = false) Long candidateId,
-                                                  @RequestParam(required = false) Long interviewerId) {
+    public Result<Page<Interview>> pageInterviews(@RequestParam(value = "current", defaultValue = "1") Integer current,
+                                                  @RequestParam(value = "size", defaultValue = "10") Integer size,
+                                                  @RequestParam(value = "status", required = false) String status,
+                                                  @RequestParam(value = "position", required = false) String position,
+                                                  @RequestParam(value = "candidateId", required = false) Long candidateId,
+                                                  @RequestParam(value = "interviewerId", required = false) Long interviewerId) {
         Page<Interview> page = new Page<>(current, size);
         Page<Interview> resultPage = interviewService.pageInterviews(page, status, position, candidateId, interviewerId);
         return Result.success(resultPage);
@@ -110,7 +114,7 @@ public class InterviewController {
      */
     @PostMapping("/cancel/{id}")
     public Result<Boolean> cancelInterview(@PathVariable("id") Long id,
-                                           @RequestParam(required = false) String reason) {
+                                           @RequestParam(value = "reason", required = false) String reason) {
         boolean result = interviewService.cancelInterview(id, reason);
         return Result.success(result);
     }
@@ -155,7 +159,7 @@ public class InterviewController {
      * 获取今日面试列表
      */
     @GetMapping("/today")
-    public Result<List<Interview>> getTodayInterviews(@RequestParam(required = false) Long interviewerId) {
+    public Result<List<Interview>> getTodayInterviews(@RequestParam(value = "interviewerId", required = false) Long interviewerId) {
         List<Interview> interviews = interviewService.getTodayInterviews(interviewerId);
         return Result.success(interviews);
     }
@@ -164,12 +168,12 @@ public class InterviewController {
      * 获取即将开始的面试
      */
     @GetMapping("/upcoming")
-    public Result<List<Interview>> getUpcomingInterviews(@RequestParam(required = false) Long userId,
-                                                         @RequestParam(defaultValue = "24") Integer hours) {
+    public Result<List<Interview>> getUpcomingInterviews(@RequestParam(value = "userId", required = false) Long userId,
+                                                         @RequestParam(value = "hours", defaultValue = "24") Integer hours) {
         List<Interview> interviews = interviewService.getUpcomingInterviews(userId, hours);
         return Result.success(interviews);
     }
-
+//TODO 没有测试
     /**
      * 重新安排面试时间
      */

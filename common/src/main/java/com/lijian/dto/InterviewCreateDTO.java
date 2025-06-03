@@ -18,8 +18,8 @@ public class InterviewCreateDTO {
     /**
      * 面试标题
      */
-    @NotBlank(message = "面试标题不能为空")
-    private String title;
+//    @NotBlank(message = "面试标题不能为空")
+//    private String title;
 
     /**
      * 应聘职位
