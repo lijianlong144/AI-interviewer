@@ -3,11 +3,17 @@ package com.lijian.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lijian.dto.QuestionCreateDTO;
 import com.lijian.entity.Question;
 import com.lijian.exception.BusinessException;
 import com.lijian.mapper.QuestionMapper;
 import com.lijian.service.QuestionService;
+import com.lijian.service.QuestionTagRelationService;
+import com.lijian.service.QuestionTagService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
@@ -19,8 +25,18 @@ import java.util.stream.Collectors;
 /**
  * 面试题服务实现类
  */
+
 @Service
 public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> implements QuestionService {
+
+
+
+    @Autowired
+    private QuestionTagService questionTagService;
+
+    @Autowired
+    private QuestionTagRelationService questionTagRelationService;
+
 
     @Override
     public Page<Question> pageQuestions(Integer current, Integer size, String type, String difficulty, String keyword) {
@@ -121,9 +137,7 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         // 优先查找职位匹配的题目
         queryWrapper.like(Question::getPosition, position)
                 .or()
-                .like(Question::getKeywords, position)
-                .or()
-                .like(Question::getTags, position);
+                .like(Question::getKeywords, position);
 
         queryWrapper.eq(Question::getStatus, 1);
         queryWrapper.orderByDesc(Question::getUseCount);
@@ -241,4 +255,33 @@ public class QuestionServiceImpl extends ServiceImpl<QuestionMapper, Question> i
         questions.forEach(question -> question.setStatus(status));
         return updateBatchById(questions);
     }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Question createQuestionWithTags(QuestionCreateDTO questionDTO) {
+        // 1. 将DTO转换为实体
+        Question question = new Question();
+        BeanUtils.copyProperties(questionDTO, question);
+
+        // 2. 保存题目
+        boolean saveResult = this.save(question);
+        if (!saveResult) {
+            throw new RuntimeException("创建题目失败");
+        }
+
+        // 3. 处理标签
+        if (questionDTO.getTags() != null && !questionDTO.getTags().isEmpty()) {
+            // 3.1 获取或创建标签
+            List<Long> tagIds = questionTagService.getOrCreateTags(questionDTO.getTags());
+
+            // 3.2 创建题目和标签的关联关系
+            boolean relationResult = questionTagRelationService.createRelations(question.getId(), tagIds);
+            if (!relationResult) {
+                throw new RuntimeException("创建题目标签关系失败");
+            }
+        }
+
+        return question;
+    }
+
 }

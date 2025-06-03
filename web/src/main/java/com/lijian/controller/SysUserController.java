@@ -69,9 +69,9 @@ public class SysUserController {
      * 修改密码
      */
     @PostMapping("/change-password")
-    public Result<Boolean> changePassword(@RequestParam @NotNull(message = "用户ID不能为空") Long userId,
-                                        @RequestParam @NotBlank(message = "原密码不能为空") String oldPassword,
-                                        @RequestParam @NotBlank(message = "新密码不能为空") String newPassword) {
+    public Result<Boolean> changePassword(@RequestParam(value ="userId" ) @NotNull(message = "用户ID不能为空") Long userId,
+                                        @RequestParam(value ="oldPassword" ) @NotBlank(message = "原密码不能为空") String oldPassword,
+                                        @RequestParam(value ="newPassword" ) @NotBlank(message = "新密码不能为空") String newPassword) {
         boolean result = userService.changePassword(userId, oldPassword, newPassword);
         return Result.success(result);
     }
@@ -80,11 +80,11 @@ public class SysUserController {
      * 分页查询用户列表
      */
     @GetMapping("/page")
-    public Result<Page<SysUser>> pageUsers(@RequestParam(defaultValue = "1") long current,
-                                         @RequestParam(defaultValue = "10") long size,
-                                         @RequestParam(required = false) String username,
-                                         @RequestParam(required = false) String realName,
-                                         @RequestParam(required = false) Long roleId) {
+    public Result<Page<SysUser>> pageUsers(@RequestParam(value = "current", defaultValue = "1") long current,
+                                         @RequestParam(value = "size",defaultValue = "10") long size,
+                                         @RequestParam(value = "username",required = false) String username,
+                                         @RequestParam(value = "realName",required = false) String realName,
+                                         @RequestParam(value = "roleId",required = false) Long roleId) {
         Page<SysUser> page = new Page<>(current, size);
         Page<SysUser> userPage = userService.pageUsers(page, username, realName, roleId);
         return Result.success(userPage);
@@ -94,9 +94,9 @@ public class SysUserController {
      * 启用/禁用用户
      */
     @PostMapping("/status")
-    public Result<Boolean> updateUserStatus(@RequestParam @NotNull(message = "用户ID不能为空") Long userId,
-                                          @RequestParam @NotNull(message = "状态不能为空") Integer status) {
-        boolean result = userService.updateUserStatus(userId, status);
+    public Result<Boolean> updateUserStatus(@RequestParam(value = "id") @NotNull(message = "用户ID不能为空") Long id,
+                                          @RequestParam(value = "status") @NotNull(message = "状态不能为空") Integer status) {
+        boolean result = userService.updateUserStatus(id, status);
         return Result.success(result);
     }
     
@@ -104,8 +104,8 @@ public class SysUserController {
      * 分配用户角色
      */
     @PostMapping("/assign-roles")
-    public Result<Boolean> assignRoles(@RequestParam @NotNull(message = "用户ID不能为空") Long userId,
-                                     @RequestParam @NotNull(message = "角色ID列表不能为空") List<Long> roleIds) {
+    public Result<Boolean> assignRoles(@RequestParam(value = "userId") @NotNull(message = "用户ID不能为空") Long userId,
+                                     @RequestParam(value = "roleIds") @NotNull(message = "角色ID列表不能为空") List<Long> roleIds) {
         boolean result = userService.assignRoles(userId, roleIds);
         return Result.success(result);
     }

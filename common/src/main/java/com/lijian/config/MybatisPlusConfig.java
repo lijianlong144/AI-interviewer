@@ -34,15 +34,18 @@ public class MybatisPlusConfig {
 
 
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        // 如果配置多个插件, 切记分页最后添加PaginationInnerInterceptor
-// 分页插件 - 注意这里的导入
-        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+
 
         // 乐观锁插件
         interceptor.addInnerInterceptor(new OptimisticLockerInnerInterceptor());
 
         // 防止全表更新与删除插件
         interceptor.addInnerInterceptor(new BlockAttackInnerInterceptor());
+
+
+        // 如果配置多个插件, 切记分页最后添加PaginationInnerInterceptor
+// 分页插件 - 注意这里的导入
+        interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
         // 如果有多数据源可以不配具体类型, 否则都建议配上具体的 DbType
         return interceptor;
 //        return new MybatisPlusInterceptor();

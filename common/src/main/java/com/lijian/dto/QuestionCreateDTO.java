@@ -18,6 +18,11 @@ import java.util.List;
 public class QuestionCreateDTO {
 
     /**
+     * 题目ID，新增时不需要传
+     */
+    private Long id;
+
+    /**
      * 题目标题
      */
     @NotBlank(message = "题目标题不能为空")
@@ -28,6 +33,12 @@ public class QuestionCreateDTO {
      */
     @NotBlank(message = "题目内容不能为空")
     private String content;
+
+    /**
+     * 分类ID
+     */
+    // @NotNull(message = "分类ID不能为空")
+    // private Long categoryId;
 
     /**
      * 题型
@@ -59,9 +70,9 @@ public class QuestionCreateDTO {
     private String referenceAnswer;
 
     /**
-     * 关键词列表
+     * 关键词，逗号分隔
      */
-    private List<String> keywords;
+    private String keywords;
 
     /**
      * 创建人ID

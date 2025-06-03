@@ -4,6 +4,60 @@
     <option name="historyList">
       <list>
         <ResponseHistory>
+          <option name="className" value="com.lijian.controller.QuestionController" />
+          <option name="code" value="200" />
+          <option name="enableEnv" value="local" />
+          <option name="enableProject" value="web" />
+          <option name="method" value="pageQuestions" />
+          <option name="methodType" value="GET" />
+          <option name="name" value="分页查询问题列表" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="className" value="com.lijian.controller.QuestionController" />
+              <option name="method" value="pageQuestions" />
+              <option name="methodDescription" value="分页查询问题列表" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="originUrl" value="/api/question/page" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="returnDocument" value="{&quot;success&quot;:&quot;是否成功&quot;,&quot;code&quot;:&quot;状态码&quot;,&quot;message&quot;:&quot;消息&quot;,&quot;data&quot;:{&quot;records&quot;:[{&quot;title&quot;:&quot;题目标题&quot;,&quot;content&quot;:&quot;题目详细内容&quot;,&quot;type&quot;:&quot;题型：TECHNICAL/BEHAVIORAL/SITUATIONAL&quot;,&quot;difficulty&quot;:&quot;难度1-5&quot;,&quot;position&quot;:&quot;适用职位&quot;,&quot;tags&quot;:&quot;标签，逗号分隔&quot;,&quot;referenceAnswer&quot;:&quot;参考答案&quot;,&quot;keywords&quot;:&quot;关键词，逗号分隔&quot;,&quot;creatorId&quot;:&quot;创建人ID&quot;,&quot;useCount&quot;:&quot;使用次数&quot;,&quot;status&quot;:&quot;状态：0-禁用 1-启用&quot;,&quot;isDeleted&quot;:&quot;No comment,Type =Number&quot;,&quot;id&quot;:&quot;主键ID&quot;,&quot;createTime&quot;:&quot;创建时间&quot;,&quot;updateTime&quot;:&quot;更新时间&quot;}],&quot;total&quot;:&quot;No comment,Type =Number&quot;,&quot;size&quot;:&quot;No comment,Type =Number&quot;,&quot;current&quot;:&quot;No comment,Type =Number&quot;,&quot;orders&quot;:[{&quot;column&quot;:&quot;No comment,Type =String&quot;,&quot;asc&quot;:&quot;No comment,Type =Boolean&quot;}],&quot;optimizeCountSql&quot;:&quot;No comment,Type =Boolean&quot;,&quot;searchCount&quot;:&quot;No comment,Type =Boolean&quot;,&quot;optimizeJoinOfCountSql&quot;:&quot;No comment,Type =Boolean&quot;,&quot;maxLimit&quot;:&quot;No comment,Type =Number&quot;,&quot;countId&quot;:&quot;No comment,Type =String&quot;}}" />
+              <option name="url" value="/api/question/page" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;current&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;size&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;10&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:false,&quot;key&quot;:&quot;type&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;type_rjd24&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;difficulty&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:false,&quot;key&quot;:&quot;keyword&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;keyword_28snw&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="current=1&#10;&amp;size=10&#10;&amp;type=&#10;&amp;difficulty=1&#10;&amp;keyword=" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: http://localhost:8083/api/question/page?difficulty=1&amp;current=1&amp;size=10&#13;&#10;Request Headers: &#13;&#10;    Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJyb2xlIjoiSU5URVJWSUVXRVIiLCJ1c2VySWQiOjgsInN1YiI6ImxpamlhbmxvbmciLCJpYXQiOjE3NDg5MzExOTgsImV4cCI6MTc0OTAxNzU5OH0.fCe7PVqORtl3bRCxAsdbphFaPbGhuo8xhE7Awse1dEmuyuTZ3uzvbBiYjKA9M6Arz7lOazTbZvpsV5pUf1j0-Q&#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Fast Request/2025.1.4&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="{&quot;success&quot;:false,&quot;code&quot;:500,&quot;message&quot;:&quot;系统异常[IllegalArgumentException]: Name for argument of type [java.lang.Integer] not specified, and parameter name information not available via reflection. Ensure that the compiler uses the '-parameters' flag. | 位置：org.springframework.web.method.annotation.AbstractNamedValueMethodArgumentResolver.updateNamedValueInfo(AbstractNamedValueMethodArgumentResolver.java:186)&quot;,&quot;data&quot;:null}" />
+          <option name="url" value="/api/question/page" />
+        </ResponseHistory>
+        <ResponseHistory>
+          <option name="className" value="com.lijian.controller.QuestionController" />
+          <option name="code" value="401" />
+          <option name="enableEnv" value="local" />
+          <option name="enableProject" value="web" />
+          <option name="method" value="pageQuestions" />
+          <option name="methodType" value="GET" />
+          <option name="name" value="分页查询问题列表" />
+          <option name="paramGroup">
+            <ParamGroupCollection>
+              <option name="className" value="com.lijian.controller.QuestionController" />
+              <option name="method" value="pageQuestions" />
+              <option name="methodDescription" value="分页查询问题列表" />
+              <option name="multipartKeyValueListJson" value="[]" />
+              <option name="originUrl" value="/api/question/page" />
+              <option name="pathParamsKeyValueListJson" value="[]" />
+              <option name="returnDocument" value="{&quot;success&quot;:&quot;是否成功&quot;,&quot;code&quot;:&quot;状态码&quot;,&quot;message&quot;:&quot;消息&quot;,&quot;data&quot;:{&quot;records&quot;:[{&quot;title&quot;:&quot;题目标题&quot;,&quot;content&quot;:&quot;题目详细内容&quot;,&quot;type&quot;:&quot;题型：TECHNICAL/BEHAVIORAL/SITUATIONAL&quot;,&quot;difficulty&quot;:&quot;难度1-5&quot;,&quot;position&quot;:&quot;适用职位&quot;,&quot;tags&quot;:&quot;标签，逗号分隔&quot;,&quot;referenceAnswer&quot;:&quot;参考答案&quot;,&quot;keywords&quot;:&quot;关键词，逗号分隔&quot;,&quot;creatorId&quot;:&quot;创建人ID&quot;,&quot;useCount&quot;:&quot;使用次数&quot;,&quot;status&quot;:&quot;状态：0-禁用 1-启用&quot;,&quot;isDeleted&quot;:&quot;No comment,Type =Number&quot;,&quot;id&quot;:&quot;主键ID&quot;,&quot;createTime&quot;:&quot;创建时间&quot;,&quot;updateTime&quot;:&quot;更新时间&quot;}],&quot;total&quot;:&quot;No comment,Type =Number&quot;,&quot;size&quot;:&quot;No comment,Type =Number&quot;,&quot;current&quot;:&quot;No comment,Type =Number&quot;,&quot;orders&quot;:[{&quot;column&quot;:&quot;No comment,Type =String&quot;,&quot;asc&quot;:&quot;No comment,Type =Boolean&quot;}],&quot;optimizeCountSql&quot;:&quot;No comment,Type =Boolean&quot;,&quot;searchCount&quot;:&quot;No comment,Type =Boolean&quot;,&quot;optimizeJoinOfCountSql&quot;:&quot;No comment,Type =Boolean&quot;,&quot;maxLimit&quot;:&quot;No comment,Type =Number&quot;,&quot;countId&quot;:&quot;No comment,Type =String&quot;}}" />
+              <option name="url" value="/api/question/page" />
+              <option name="urlEncodedKeyValueListJson" value="[]" />
+              <option name="urlParamsKeyValueListJson" value="[{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;current&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;size&quot;,&quot;type&quot;:&quot;Number&quot;,&quot;value&quot;:&quot;10&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:false,&quot;key&quot;:&quot;type&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;type_rjd24&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:true,&quot;key&quot;:&quot;difficulty&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;1&quot;},{&quot;comment&quot;:&quot;&quot;,&quot;customFlag&quot;:2,&quot;enabled&quot;:false,&quot;key&quot;:&quot;keyword&quot;,&quot;type&quot;:&quot;String&quot;,&quot;value&quot;:&quot;keyword_28snw&quot;}]" />
+              <option name="urlParamsKeyValueListText" value="current=1&#10;&amp;size=10&#10;&amp;type=&#10;&amp;difficulty=1&#10;&amp;keyword=" />
+            </ParamGroupCollection>
+          </option>
+          <option name="requestInfo" value="Request Url: http://localhost:8083/api/question/page?difficulty=1&amp;current=1&amp;size=10&#13;&#10;Request Headers: &#13;&#10;    Accept: application/json,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8&#13;&#10;    User-Agent: Fast Request/2025.1.4&#13;&#10;    Accept-Encoding: gzip, deflate&#13;&#10;Request Body: &#13;&#10;    null&#13;&#10;" />
+          <option name="response" value="{&quot;code&quot;:401,&quot;message&quot;:&quot;未授权，请先登录&quot;,&quot;success&quot;:false}" />
+          <option name="url" value="/api/question/page" />
+        </ResponseHistory>
+        <ResponseHistory>
           <option name="className" value="com.lijian.controller.SysUserController" />
           <option name="code" value="302" />
           <option name="enableEnv" value="local" />

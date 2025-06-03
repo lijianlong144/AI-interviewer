@@ -22,9 +22,12 @@ public class Question extends BaseEntity {
      * 题目详细内容
      */
     private String content;
-//    @TableName
-//    @TableField("category_id")
-//    private Long categoryId;
+    
+    /**
+     * 分类ID
+     */
+    // private Long categoryId;
+    
     /**
      * 题型：TECHNICAL/BEHAVIORAL/SITUATIONAL
      */
@@ -49,7 +52,7 @@ public class Question extends BaseEntity {
     /**
      * 参考答案
      */
-    private String standardAnswer;
+    private String referenceAnswer;
     
     /**
      * 关键词，逗号分隔

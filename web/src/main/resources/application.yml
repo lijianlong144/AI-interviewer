@@ -5,11 +5,17 @@ spring:
   application:
     name: ai-interviewer
 
+
+
+
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/ai_interviewer?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
     password: 1314
+
+
 
   jackson:
     date-time-format: yyyy-MM-dd HH:mm:ss
@@ -25,6 +31,8 @@ spring:
   #     resourceserver:
   #       jwt:
   #         jws-algorithms:
+  profiles:
+    active: dev # 设置为开发环境
 
 # JWT配置 - 这是自定义的配置
 jwt:
@@ -39,3 +47,20 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+
+
+
+
+# 开发环境
+#app:
+#  debug: true
+#
+#  profiles:
+#    active: dev
+
+# 生产环境使用
+# app:
+#   debug: false
+
+#   profiles:
+#     active: prod

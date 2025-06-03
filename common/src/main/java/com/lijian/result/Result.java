@@ -126,6 +126,34 @@ public class Result<T> implements Serializable {
         return failure(ResultCode.FAILURE.getCode(), message);
     }
     
+    public static <T> Result<T> error() {
+        return new Result<T>()
+                .setSuccess(false)
+                .setCode(ResultCode.FAILURE.getCode())
+                .setMessage(ResultCode.FAILURE.getMessage());
+    }
+
+    public static <T> Result<T> error(String message) {
+        return new Result<T>()
+                .setSuccess(false)
+                .setCode(ResultCode.FAILURE.getCode())
+                .setMessage(message);
+    }
+
+    public static <T> Result<T> error(Integer code, String message) {
+        return new Result<T>()
+                .setSuccess(false)
+                .setCode(code)
+                .setMessage(message);
+    }
+    
+    public Result(Integer code, String message, T data) {
+        this.success = code.equals(ResultCode.SUCCESS.getCode());
+        this.code = code;
+        this.message = message;
+        this.data = data;
+    }
+    
     public Boolean getSuccess() {
         return success;
     }

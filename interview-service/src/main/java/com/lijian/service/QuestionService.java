@@ -2,6 +2,7 @@ package com.lijian.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lijian.dto.QuestionCreateDTO;
 import com.lijian.entity.Question;
 
 import java.util.List;
@@ -103,4 +104,22 @@ public interface QuestionService extends IService<Question> {
      * @return 是否成功
      */
     boolean batchUpdateStatus(List<Long> questionIds, Integer status);
+
+    /**
+     * 创建题目并处理标签关系
+     * @param questionDTO 题目创建DTO
+     * @return 创建的题目
+     */
+    Question createQuestionWithTags(QuestionCreateDTO questionDTO);
+
+    /**
+     * 更新问题及其标签
+     * @param questionDTO 问题更新DTO
+     * @return 更新结果
+     */
+//    boolean updateQuestionWithTags(QuestionCreateDTO questionDTO);
+
+
+
+
 }
