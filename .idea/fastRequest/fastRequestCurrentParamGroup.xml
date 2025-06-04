@@ -13,9 +13,9 @@
     <option name="clasDescription" value="面试管理控制器" />
     <option name="className" value="com.lijian.controller.InterviewController" />
     <option name="filePath" value="" />
-    <option name="method" value="createInterview" />
-    <option name="methodDescription" value="创建面试" />
-    <option name="methodType" value="POST" />
+    <option name="method" value="updateInterview" />
+    <option name="methodDescription" value="更新面试信息" />
+    <option name="methodType" value="PUT" />
     <option name="module" value="web" />
     <option name="originUrl" value="/api/interview" />
     <option name="responseParamMap">
@@ -27,7 +27,7 @@
         </entry>
       </map>
     </option>
-    <option name="returnDocument" value="{&quot;success&quot;:&quot;是否成功&quot;,&quot;code&quot;:&quot;状态码&quot;,&quot;message&quot;:&quot;消息&quot;,&quot;data&quot;:{&quot;interviewNo&quot;:&quot;面试编号&quot;,&quot;candidateId&quot;:&quot;候选人ID&quot;,&quot;candidateName&quot;:&quot;候选人姓名&quot;,&quot;position&quot;:&quot;应聘职位&quot;,&quot;interviewerId&quot;:&quot;面试官ID&quot;,&quot;scheduledTime&quot;:&quot;预约时间&quot;,&quot;startTime&quot;:&quot;开始时间&quot;,&quot;endTime&quot;:&quot;结束时间&quot;,&quot;duration&quot;:&quot;面试时长(分钟)&quot;,&quot;status&quot;:&quot;状态：PENDING/ONGOING/COMPLETED/CANCELLED&quot;,&quot;roomCode&quot;:&quot;面试房间号&quot;,&quot;totalScore&quot;:&quot;总分&quot;,&quot;id&quot;:&quot;主键ID&quot;,&quot;createTime&quot;:&quot;创建时间&quot;,&quot;updateTime&quot;:&quot;更新时间&quot;}}" />
+    <option name="returnDocument" value="{&quot;success&quot;:&quot;是否成功&quot;,&quot;code&quot;:&quot;状态码&quot;,&quot;message&quot;:&quot;消息&quot;,&quot;data&quot;:{&quot;java.lang.Boolean&quot;:&quot;No comment,Type =Boolean&quot;}}" />
     <option name="url" value="/api/interview" />
   </component>
 </project>
