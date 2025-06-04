@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="fastRequestCurrentParamGroup">
-    <option name="bodyParamMap">
+    <option name="clasDescription" value="认证控制器" />
+    <option name="className" value="com.lijian.controller.AuthController" />
+    <option name="filePath" value="" />
+    <option name="method" value="getCurrentUser" />
+    <option name="methodDescription" value="获取当前用户信息" />
+    <option name="module" value="web" />
+    <option name="originUrl" value="/api/auth/me" />
+    <option name="requestParamMap">
       <map>
-        <entry key="interview">
+        <entry key="authentication">
           <value>
             <Object />
           </value>
         </entry>
       </map>
     </option>
-    <option name="clasDescription" value="面试管理控制器" />
-    <option name="className" value="com.lijian.controller.InterviewController" />
-    <option name="filePath" value="" />
-    <option name="method" value="updateInterview" />
-    <option name="methodDescription" value="更新面试信息" />
-    <option name="methodType" value="PUT" />
-    <option name="module" value="web" />
-    <option name="originUrl" value="/api/interview" />
     <option name="responseParamMap">
       <map>
         <entry key="return">
@@ -27,7 +26,7 @@
         </entry>
       </map>
     </option>
-    <option name="returnDocument" value="{&quot;success&quot;:&quot;是否成功&quot;,&quot;code&quot;:&quot;状态码&quot;,&quot;message&quot;:&quot;消息&quot;,&quot;data&quot;:{&quot;java.lang.Boolean&quot;:&quot;No comment,Type =Boolean&quot;}}" />
-    <option name="url" value="/api/interview" />
+    <option name="returnDocument" value="{&quot;success&quot;:&quot;是否成功&quot;,&quot;code&quot;:&quot;状态码&quot;,&quot;message&quot;:&quot;消息&quot;,&quot;data&quot;:{&quot;username&quot;:&quot;用户名&quot;,&quot;password&quot;:&quot;密码&quot;,&quot;realName&quot;:&quot;真实姓名&quot;,&quot;phone&quot;:&quot;手机号&quot;,&quot;email&quot;:&quot;邮箱&quot;,&quot;avatar&quot;:&quot;头像&quot;,&quot;role&quot;:&quot;角色：ADMIN/HR/CANDIDATE&quot;,&quot;status&quot;:&quot;状态：0-禁用 1-启用&quot;,&quot;lastLoginTime&quot;:&quot;最后登录时间&quot;,&quot;isDeleted&quot;:&quot;是否删除：0-否 1-是&quot;,&quot;id&quot;:&quot;主键ID&quot;,&quot;createTime&quot;:&quot;创建时间&quot;,&quot;updateTime&quot;:&quot;更新时间&quot;}}" />
+    <option name="url" value="/api/auth/me" />
   </component>
 </project>

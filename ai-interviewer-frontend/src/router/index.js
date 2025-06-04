@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { getToken, getUserRole } from '@/utils/auth'
+import { getToken, getUserRole, getUserInfo } from '@/utils/auth'
+import { ElMessage } from 'element-plus'
+import { useUserStore } from '@/stores/userStore'
 
 const routes = [
   {
@@ -100,6 +102,18 @@ const routes = [
         name: 'CandidateProfile',
         component: () => import('@/views/candidate/Profile.vue'),
         meta: { title: '个人信息', roles: ['CANDIDATE'] }
+      },
+      {
+        path: 'interview-result/:id',
+        name: 'CandidateInterviewResult',
+        component: () => import('@/views/candidate/InterviewResult.vue'),
+        meta: { title: '面试结果', roles: ['CANDIDATE'] }
+      },
+      {
+        path: 'interview-detail/:id',
+        name: 'CandidateInterviewDetail',
+        component: () => import('@/views/candidate/InterviewDetail.vue'),
+        meta: { title: '面试详情', roles: ['CANDIDATE'] }
       }
     ]
   },
@@ -117,9 +131,10 @@ const router = createRouter({
 })
 
 // 路由守卫
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const token = getToken()
   const userRole = getUserRole()
+  const userInfo = getUserInfo()
 
   // 不需要认证的路由直接放行
   if (to.meta.requiresAuth === false) {
@@ -128,6 +143,14 @@ router.beforeEach((to, from, next) => {
   
   // 未登录，跳转到登录页
   if (!token) {
+    return next('/login')
+  }
+  
+  // 检查是否有用户信息
+  if (!userInfo) {
+    ElMessage.warning('未获取到用户信息，请重新登录')
+    const userStore = useUserStore()
+    userStore.logout()
     return next('/login')
   }
   

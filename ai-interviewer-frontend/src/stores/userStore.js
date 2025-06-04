@@ -17,12 +17,19 @@ export const useUserStore = defineStore('user', () => {
     try {
       const res = await login(loginForm)
       token.value = res.data.token
-      userInfo.value = res.data
-      role.value = res.data.role
       
-      // 保存到localStorage
+      // 保存token
       setToken(token.value)
-      setUserInfo(userInfo.value)
+      
+      // 获取完整的用户信息
+      try {
+        await getUserInfoAction()
+      } catch (error) {
+        console.error('获取用户信息失败:', error)
+        ElMessage.warning('未获取到用户信息，请重新登录')
+        logout()
+        return Promise.reject(error)
+      }
       
       isLogin.value = true
       ElMessage.success('登录成功')
@@ -63,7 +70,7 @@ export const useUserStore = defineStore('user', () => {
       
       return res
     } catch (error) {
-      console.error('获取用户信息失败:', error)
+      console.error('获取用户信息失败-getUserInfoAction:', error)
       throw error
     }
   }

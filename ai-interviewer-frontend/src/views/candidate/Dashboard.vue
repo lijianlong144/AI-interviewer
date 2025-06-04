@@ -86,7 +86,7 @@
             进入面试
           </el-button>
           <el-countdown 
-            v-if="upcomingInterview.status === 'PENDING'"
+            v-if="upcomingInterview.status === 'PENDING' && isInterviewToday(upcomingInterview.scheduledTime)"
             :value="getCountdownValue(upcomingInterview.scheduledTime)" 
             format="DD 天 HH:mm:ss"
           >
@@ -102,10 +102,11 @@
       <template #header>
         <div class="card-header">
           <span>所有面试</span>
+          <el-button type="primary" link @click="refreshInterviews">刷新</el-button>
         </div>
       </template>
       
-      <el-table :data="interviewList" style="width: 100%">
+      <el-table :data="interviewList" style="width: 100%" v-loading="loading">
         <el-table-column prop="interviewNo" label="面试编号" width="150" />
         <el-table-column prop="position" label="应聘职位" width="180" />
         <el-table-column prop="scheduledTime" label="预约时间" width="180">
@@ -144,10 +145,77 @@
             >
               查看结果
             </el-button>
+            <el-button 
+              v-if="scope.row.status === 'PENDING'" 
+              type="danger" 
+              link 
+              @click="handleCancel(scope.row)"
+            >
+              取消面试
+            </el-button>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
+    
+    <!-- 面试详情对话框 -->
+    <el-dialog
+      v-model="detailDialogVisible"
+      title="面试详情"
+      width="50%"
+    >
+      <div v-if="currentInterview" class="interview-detail">
+        <div class="detail-item">
+          <span class="detail-label">面试编号:</span>
+          <span class="detail-value">{{ currentInterview.interviewNo }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">应聘职位:</span>
+          <span class="detail-value">{{ currentInterview.position }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">预约时间:</span>
+          <span class="detail-value">{{ formatDateTime(currentInterview.scheduledTime) }}</span>
+        </div>
+        <div class="detail-item">
+          <span class="detail-label">状态:</span>
+          <el-tag :type="getStatusType(currentInterview.status)">{{ getStatusText(currentInterview.status) }}</el-tag>
+        </div>
+        <div class="detail-item" v-if="currentInterview.roomCode">
+          <span class="detail-label">房间号:</span>
+          <span class="detail-value">{{ currentInterview.roomCode }}</span>
+        </div>
+      </div>
+      
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="detailDialogVisible = false">关闭</el-button>
+          <el-button 
+            v-if="currentInterview && currentInterview.status === 'ONGOING'"
+            type="success" 
+            @click="enterRoom(currentInterview)"
+          >
+            进入面试
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
+    
+    <!-- 取消面试确认对话框 -->
+    <el-dialog
+      v-model="cancelDialogVisible"
+      title="取消面试"
+      width="30%"
+    >
+      <p>您确定要取消此次面试吗？此操作不可撤销。</p>
+      
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="cancelDialogVisible = false">取消</el-button>
+          <el-button type="danger" @click="confirmCancel" :loading="cancelLoading">确认取消</el-button>
+        </div>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -155,6 +223,8 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
+import { getCandidateInterviews, getInterviewDetail, cancelInterview, getUpcomingInterviews } from '@/api/interview'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import dayjs from 'dayjs'
 
 const router = useRouter()
@@ -167,6 +237,13 @@ const completedCount = ref(0)
 
 // 面试列表
 const interviewList = ref([])
+const loading = ref(false)
+
+// 对话框控制
+const detailDialogVisible = ref(false)
+const cancelDialogVisible = ref(false)
+const cancelLoading = ref(false)
+const currentInterview = ref(null)
 
 // 获取最近的一个面试
 const upcomingInterview = computed(() => {
@@ -191,6 +268,13 @@ const upcomingInterview = computed(() => {
 // 格式化日期时间
 const formatDateTime = (datetime) => {
   return dayjs(datetime).format('YYYY-MM-DD HH:mm')
+}
+
+// 判断面试是否为今天
+const isInterviewToday = (datetime) => {
+  const today = dayjs().startOf('day')
+  const interviewDate = dayjs(datetime).startOf('day')
+  return today.isSame(interviewDate) || today.isBefore(interviewDate)
 }
 
 // 获取倒计时值
@@ -221,8 +305,18 @@ const getStatusText = (status) => {
 }
 
 // 查看面试详情
-const checkInterview = (interview) => {
-  router.push(`/candidate/interview-detail/${interview.id}`)
+const checkInterview = async (interview) => {
+  try {
+    loading.value = true
+    const res = await getInterviewDetail(interview.id)
+    currentInterview.value = res.data
+    detailDialogVisible.value = true
+  } catch (error) {
+    console.error('获取面试详情失败:', error)
+    ElMessage.error('获取面试详情失败')
+  } finally {
+    loading.value = false
+  }
 }
 
 // 进入面试房间
@@ -235,39 +329,48 @@ const viewResult = (interview) => {
   router.push(`/candidate/interview-result/${interview.id}`)
 }
 
+// 处理取消面试
+const handleCancel = (interview) => {
+  currentInterview.value = interview
+  cancelDialogVisible.value = true
+}
+
+// 确认取消面试
+const confirmCancel = async () => {
+  if (!currentInterview.value) return
+  
+  try {
+    cancelLoading.value = true
+    await cancelInterview(currentInterview.value.id)
+    ElMessage.success('面试已取消')
+    cancelDialogVisible.value = false
+    refreshInterviews()
+  } catch (error) {
+    console.error('取消面试失败:', error)
+    ElMessage.error('取消面试失败')
+  } finally {
+    cancelLoading.value = false
+  }
+}
+
+// 刷新面试列表
+const refreshInterviews = async () => {
+  await loadInterviewData()
+}
+
 // 加载面试数据
 const loadInterviewData = async () => {
   try {
-    // 模拟数据，实际项目中需要调用后端接口
-    const userId = userStore.userInfo?.id || 0
+    loading.value = true
+    const userId = userStore.userInfo?.id
     
-    // 模拟数据
-    interviewList.value = [
-      {
-        id: 1,
-        interviewNo: 'IV20241220001',
-        position: 'Java开发工程师',
-        scheduledTime: '2024-12-21T14:00:00',
-        status: 'PENDING',
-        roomCode: '123456'
-      },
-      {
-        id: 2,
-        interviewNo: 'IV20241219001',
-        position: '前端开发工程师',
-        scheduledTime: '2024-12-19T16:00:00',
-        status: 'COMPLETED',
-        roomCode: '234567'
-      },
-      {
-        id: 3,
-        interviewNo: 'IV20241218001',
-        position: 'Python开发工程师',
-        scheduledTime: '2024-12-18T10:00:00',
-        status: 'COMPLETED',
-        roomCode: '345678'
-      }
-    ]
+    if (!userId) {
+      ElMessage.warning('未获取到用户信息，请重新登录')
+      return
+    }
+    
+    const res = await getCandidateInterviews(userId)
+    interviewList.value = res.data || []
     
     // 计算统计数据
     pendingCount.value = interviewList.value.filter(item => item.status === 'PENDING').length
@@ -276,11 +379,23 @@ const loadInterviewData = async () => {
     
   } catch (error) {
     console.error('加载面试数据失败:', error)
+    ElMessage.error('加载面试数据失败')
+  } finally {
+    loading.value = false
   }
 }
 
-onMounted(() => {
-  loadInterviewData()
+onMounted(async () => {
+  // 如果没有用户信息，先获取用户信息
+  if (!userStore.userInfo) {
+    try {
+      await userStore.getUserInfoAction()
+    } catch (error) {
+      console.error('获取用户信息失败:', error)
+    }
+  }
+  
+  await loadInterviewData()
 })
 </script>
 
@@ -370,17 +485,17 @@ onMounted(() => {
   margin-bottom: 20px;
 }
 
-.info-item {
+.info-item, .detail-item {
   margin-bottom: 10px;
   display: flex;
 }
 
-.info-label {
+.info-label, .detail-label {
   font-weight: bold;
   width: 100px;
 }
 
-.info-value {
+.info-value, .detail-value {
   flex: 1;
 }
 
@@ -403,5 +518,11 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.interview-detail {
+  padding: 20px;
+  background-color: #f8f8f8;
+  border-radius: 4px;
 }
 </style> 
