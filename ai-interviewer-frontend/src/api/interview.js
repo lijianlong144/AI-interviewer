@@ -62,7 +62,7 @@ export function endInterview(interviewId) {
  */
 export function getUpcomingInterviews(userId, hours = 24) {
   return request({
-    url: `/interview/upcoming`,
+    url: '/interview/upcoming',
     method: 'get',
     params: { userId, hours }
   })
@@ -74,7 +74,7 @@ export function getUpcomingInterviews(userId, hours = 24) {
  */
 export function getTodayInterviews(candidateId) {
   return request({
-    url: `/interview/today`,
+    url: '/interview/today',
     method: 'get',
     params: { candidateId }
   })
@@ -88,5 +88,57 @@ export function cancelInterview(interviewId) {
   return request({
     url: `/interview/cancel/${interviewId}`,
     method: 'post'
+  })
+}
+
+// 创建面试
+export function createInterview(data) {
+  return request({
+    url: '/interview',
+    method: 'post',
+    data
+  })
+}
+
+// 更新面试信息
+export function updateInterview(data) {
+  return request({
+    url: '/interview',
+    method: 'put',
+    data
+  })
+}
+
+// 分页查询面试
+export function getInterviewPage(params) {
+  return request({
+    url: '/interview/page',
+    method: 'get',
+    params
+  })
+}
+
+// 获取面试统计信息
+export function getInterviewStatistics(params) {
+  return request({
+    url: '/interview/statistics',
+    method: 'get',
+    params
+  })
+}
+
+// 根据面试官ID获取面试列表
+export function getInterviewsByInterviewer(interviewerId) {
+  return request({
+    url: `/interview/interviewer/${interviewerId}`,
+    method: 'get'
+  })
+}
+
+// 根据候选人ID获取面试列表
+export function getInterviewsByCandidate(candidateId) {
+  return request({
+    url: `/interview/candidate/${candidateId}`,
+    method: 'get'
   })
 } 

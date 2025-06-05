@@ -14,17 +14,17 @@
             <el-icon><Menu /></el-icon>
             <span>工作台</span>
           </el-menu-item>
-          <el-menu-item index="/hr/question">
-            <el-icon><Document /></el-icon>
-            <span>题库管理</span>
-          </el-menu-item>
-          <el-menu-item index="/hr/interview">
-            <el-icon><Calendar /></el-icon>
-            <span>面试管理</span>
-          </el-menu-item>
           <el-menu-item index="/hr/users">
             <el-icon><User /></el-icon>
             <span>用户管理</span>
+          </el-menu-item>
+          <el-menu-item index="/hr/interviews">
+            <el-icon><Calendar /></el-icon>
+            <span>面试管理</span>
+          </el-menu-item>
+          <el-menu-item index="/hr/questions">
+            <el-icon><Document /></el-icon>
+            <span>题库管理</span>
           </el-menu-item>
         </el-menu>
       </el-aside>

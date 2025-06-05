@@ -60,22 +60,22 @@ const routes = [
         meta: { title: '工作台', roles: ['HR'] }
       },
       {
-        path: 'question',
-        name: 'HRQuestionList',
-        component: () => import('@/views/question/QuestionList.vue'),
-        meta: { title: '题库管理', roles: ['HR'] }
-      },
-      {
-        path: 'interview',
-        name: 'HRInterviewList',
-        component: () => import('@/views/interview/InterviewList.vue'),
-        meta: { title: '面试管理', roles: ['HR'] }
-      },
-      {
         path: 'users',
         name: 'UserManagement',
         component: () => import('@/views/hr/UserManagement.vue'),
         meta: { title: '用户管理', roles: ['HR'] }
+      },
+      {
+        path: 'interviews',
+        name: 'InterviewManagement',
+        component: () => import('@/views/hr/InterviewManagement.vue'),
+        meta: { title: '面试管理', roles: ['HR'] }
+      },
+      {
+        path: 'questions',
+        name: 'QuestionManagement',
+        component: () => import('@/views/hr/QuestionManagement.vue'),
+        meta: { title: '题库管理', roles: ['HR'] }
       }
     ]
   },
