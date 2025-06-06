@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>面试邀请</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h2 {
+            color: #0056b3;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #0056b3;
+        }
+        .interview-details {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-left: 4px solid #0056b3;
+            margin: 20px 0;
+        }
+        .footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 0.9em;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <h2>面试邀请</h2>
+    <p>亲爱的<span class="highlight" th:text="${candidateRealName}">候选人</span>：</p>
+    <p>您好！</p>
+    <p>感谢您对我们公司<span class="highlight" th:text="${positionName}">职位名称</span>职位的关注。经过初步筛选，我们诚挚地邀请您参加面试。</p>
+    
+    <div class="interview-details">
+        <h3>面试安排</h3>
+        <p><strong>面试职位：</strong><span th:text="${positionName}">职位名称</span></p>
+        <p><strong>面试时间：</strong><span th:text="${interviewTime}">面试时间</span></p>
+        <p><strong>面试方式：</strong>线上面试</p>
+        <p><strong>房间号：</strong><span th:text="${roomCode}">房间号</span></p>
+    </div>
+    
+    <h3>请您准备好以下事项：</h3>
+    <ol>
+        <li>确保网络环境稳定</li>
+        <li>准备好个人简历和相关证明材料</li>
+        <li>提前5分钟进入面试房间</li>
+    </ol>
+    
+    <p>如有任何问题，请随时联系我们。</p>
+    <p>祝您面试顺利！</p>
+    
+    <div class="footer">
+        <p><span th:text="${companyName}">公司名称</span>人力资源部</p>
+        <p><span th:text="${sendDate}">发送日期</span></p>
+    </div>
+</body>
+</html> 

@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * 面试报告实体类
@@ -18,6 +19,31 @@ public class InterviewReport extends BaseEntity {
      * 面试ID
      */
     private Long interviewId;
+    
+    /**
+     * 候选人ID
+     */
+    private Long candidateId;
+    
+    /**
+     * 面试官ID
+     */
+    private Long interviewerId;
+    
+    /**
+     * 应聘职位
+     */
+    private String position;
+    
+    /**
+     * 面试时间
+     */
+    private LocalDateTime interviewTime;
+    
+    /**
+     * 面试时长(分钟)
+     */
+    private Integer duration;
     
     /**
      * 总体评分
@@ -35,6 +61,16 @@ public class InterviewReport extends BaseEntity {
     private BigDecimal communicationScore;
     
     /**
+     * 解决问题能力分
+     */
+    private BigDecimal problemSolvingScore;
+    
+    /**
+     * 文化匹配度分
+     */
+    private BigDecimal culturalFitScore;
+    
+    /**
      * 逻辑能力分
      */
     private BigDecimal logicScore;
@@ -43,6 +79,11 @@ public class InterviewReport extends BaseEntity {
      * 专业能力分
      */
     private BigDecimal professionalScore;
+    
+    /**
+     * 总体评价
+     */
+    private String overallEvaluation;
     
     /**
      * 优势分析
@@ -73,4 +114,9 @@ public class InterviewReport extends BaseEntity {
      * 推荐决策：STRONGLY_RECOMMEND/RECOMMEND/NEUTRAL/NOT_RECOMMEND
      */
     private String recommendation;
+    
+    /**
+     * 状态：DRAFT/PUBLISHED/ARCHIVED
+     */
+    private String status;
 } 

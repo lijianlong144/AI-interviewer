@@ -5,6 +5,19 @@ spring:
   application:
     name: ai-interviewer
 
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: 1609397402@qq.com # lijianlong144@foxmail.com
+    password: wlkzmovkwrbsbadc
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+    default-encoding: UTF-8
 
 
 
@@ -48,8 +61,10 @@ mybatis-plus:
     db-config:
       id-type: auto
 
-
-
+#自定义mail
+email:
+  from: 1609397402@qq.com  # 发件人邮箱
+  fromName: AI面试系统      # 发件人名称
 
 # 开发环境
 #app:

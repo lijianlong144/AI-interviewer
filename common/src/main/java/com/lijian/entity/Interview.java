@@ -79,4 +79,10 @@ public class Interview extends BaseEntity {
      * 总分
      */
     private BigDecimal totalScore;
-} 
+
+    private Long positionId;
+    private Long applicationId;
+
+    private String description;
+    private String title;
+}

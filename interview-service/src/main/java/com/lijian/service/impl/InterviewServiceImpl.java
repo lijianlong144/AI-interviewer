@@ -322,15 +322,21 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
         // 排除已取消的面试
         queryWrapper.ne(Interview::getStatus, InterviewStatusEnum.CANCELLED.getCode());
 
-        // 检查时间重叠
-        queryWrapper.and(wrapper ->
-                wrapper.between(Interview::getScheduledTime, startTime, endTime)
-                        .or()
-                        .le(Interview::getScheduledTime, startTime)
-                        .ge(Interview::getScheduledTime, endTime.minusMinutes(60)) // 假设其他面试也是1小时
-        );
+        List<Interview> existingInterviews = list(queryWrapper);
 
-        return count(queryWrapper) > 0;
+        // 检查每个已存在的面试是否与新面试时间重叠
+        for (Interview interview : existingInterviews) {
+            LocalDateTime existingStart = interview.getScheduledTime();
+            LocalDateTime existingEnd = existingStart.plusMinutes(interview.getDuration()); // 假设有duration字段
+
+            // 时间重叠判断：两个时间段重叠的条件
+            // 新面试开始时间 < 已存在面试结束时间 AND 新面试结束时间 > 已存在面试开始时间
+            if (startTime.isBefore(existingEnd) && endTime.isAfter(existingStart)) {
+                return true; // 存在冲突
+            }
+        }
+
+        return false; // 无冲突
     }
 
     @Override

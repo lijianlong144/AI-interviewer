@@ -68,7 +68,19 @@
   <!-- 依赖管理 -->
   <dependencyManagement>
     <dependencies>
+      <!-- 在 dependencyManagement 中添加 -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-mail</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
 
+      <!-- Thymeleaf模板引擎（用于邮件模板） -->
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        <version>${spring-boot.version}</version>
+      </dependency>
 
       <!-- 内部模块版本管理 -->
       <dependency>
