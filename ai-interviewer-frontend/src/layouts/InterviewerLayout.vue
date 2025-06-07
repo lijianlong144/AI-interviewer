@@ -14,6 +14,10 @@
             <el-icon><Menu /></el-icon>
             <span>工作台</span>
           </el-menu-item>
+          <el-menu-item index="/interviewer/schedule">
+            <el-icon><Tickets /></el-icon>
+            <span>面试安排</span>
+          </el-menu-item>
           <el-menu-item index="/interviewer/question">
             <el-icon><Document /></el-icon>
             <span>题库管理</span>
@@ -61,6 +65,7 @@
 import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
+import { Menu, Calendar, Document, Tickets, ArrowDown } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()

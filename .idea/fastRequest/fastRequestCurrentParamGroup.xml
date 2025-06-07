@@ -4,19 +4,28 @@
     <option name="clasDescription" value="面试流程控制器" />
     <option name="className" value="com.lijian.controller.InterviewProcessController" />
     <option name="filePath" value="" />
-    <option name="method" value="applyPosition" />
-    <option name="methodDescription" value="候选人投递简历" />
-    <option name="methodType" value="POST" />
+    <option name="method" value="confirmInterview" />
+    <option name="methodDescription" value="候选人确认面试" />
+    <option name="methodType" value="PUT" />
     <option name="module" value="web" />
-    <option name="originUrl" value="/api/interview-process/apply" />
-    <option name="requestParamMap">
+    <option name="originUrl" value="/api/interview-process/confirm/{interviewId}" />
+    <option name="pathParamMap">
       <map>
-        <entry key="positionId">
+        <entry key="interviewId">
           <value>
             <Object />
           </value>
         </entry>
-        <entry key="resumeId">
+      </map>
+    </option>
+    <option name="requestParamMap">
+      <map>
+        <entry key="confirmed">
+          <value>
+            <Object />
+          </value>
+        </entry>
+        <entry key="reason">
           <value>
             <Object />
           </value>
@@ -32,7 +41,7 @@
         </entry>
       </map>
     </option>
-    <option name="returnDocument" value="{&quot;success&quot;:&quot;是否成功&quot;,&quot;code&quot;:&quot;状态码&quot;,&quot;message&quot;:&quot;消息&quot;,&quot;data&quot;:{&quot;id&quot;:&quot;No comment,Type =Number&quot;,&quot;applicationNo&quot;:&quot;申请编号&quot;,&quot;positionId&quot;:&quot;职位ID&quot;,&quot;candidateId&quot;:&quot;候选人ID&quot;,&quot;resumeId&quot;:&quot;简历ID&quot;,&quot;status&quot;:&quot;状态：PENDING/REVIEWING/PASSED/REJECTED/INTERVIEW_SCHEDULED&quot;,&quot;source&quot;:&quot;来源&quot;,&quot;hrComment&quot;:&quot;HR备注&quot;,&quot;rejectReason&quot;:&quot;拒绝原因&quot;,&quot;score&quot;:&quot;简历评分&quot;,&quot;isRead&quot;:&quot;HR是否已读：0-否 1-是&quot;,&quot;readTime&quot;:&quot;HR查看时间&quot;,&quot;interviewId&quot;:&quot;面试ID&quot;,&quot;applyTime&quot;:&quot;申请时间&quot;,&quot;screenTime&quot;:&quot;筛选时间&quot;,&quot;createTime&quot;:&quot;创建时间&quot;,&quot;updateTime&quot;:&quot;更新时间&quot;}}" />
-    <option name="url" value="/api/interview-process/apply" />
+    <option name="returnDocument" value="{&quot;success&quot;:&quot;是否成功&quot;,&quot;code&quot;:&quot;状态码&quot;,&quot;message&quot;:&quot;消息&quot;,&quot;data&quot;:{&quot;java.lang.Boolean&quot;:&quot;No comment,Type =Boolean&quot;}}" />
+    <option name="url" value="/api/interview-process/confirm/1" />
   </component>
 </project>

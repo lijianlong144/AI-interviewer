@@ -113,7 +113,7 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
             throw new BusinessException("面试不存在");
         }
 
-        if (!InterviewStatusEnum.PENDING.getCode().equals(interview.getStatus())) {
+        if (!InterviewStatusEnum.CONFIRMED.getCode().equals(interview.getStatus())) {
             throw new BusinessException("只有待进行的面试才能开始");
         }
 
@@ -141,6 +141,8 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
         if (interview.getStartTime() != null) {
             long minutes = ChronoUnit.MINUTES.between(interview.getStartTime(), endTime);
             interview.setDuration((int) minutes);
+        } else {
+            throw new BusinessException("面试开始时间未记录，无法结束面试，系统内部错误，请联系相关hr重新面试");
         }
 
         return updateById(interview);

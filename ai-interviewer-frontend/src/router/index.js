@@ -66,6 +66,18 @@ const routes = [
         meta: { title: '用户管理', roles: ['HR'] }
       },
       {
+        path: 'applications',
+        name: 'ApplicationManagement',
+        component: () => import('@/views/hr/ApplicationManagement.vue'),
+        meta: { title: '申请管理', roles: ['HR'] }
+      },
+      {
+        path: 'application/:id',
+        name: 'ApplicationDetail',
+        component: () => import('@/views/hr/ApplicationDetail.vue'),
+        meta: { title: '申请详情', roles: ['HR'] }
+      },
+      {
         path: 'interviews',
         name: 'InterviewManagement',
         component: () => import('@/views/hr/InterviewManagement.vue'),
@@ -90,6 +102,54 @@ const routes = [
         name: 'CandidateDashboard',
         component: () => import('@/views/candidate/Dashboard.vue'),
         meta: { title: '我的面试', roles: ['CANDIDATE'] }
+      },
+      {
+        path: 'positions',
+        name: 'PositionList',
+        component: () => import('@/views/candidate/PositionList.vue'),
+        meta: { title: '职位列表', roles: ['CANDIDATE'] }
+      },
+      {
+        path: 'position/:id',
+        name: 'PositionDetail',
+        component: () => import('@/views/candidate/PositionDetail.vue'),
+        meta: { title: '职位详情', roles: ['CANDIDATE'] }
+      },
+      {
+        path: 'resume',
+        name: 'ResumeList',
+        component: () => import('@/views/candidate/ResumeList.vue'),
+        meta: { title: '我的简历', roles: ['CANDIDATE'] }
+      },
+      {
+        path: 'resume/create',
+        name: 'ResumeCreate',
+        component: () => import('@/views/candidate/ResumeEdit.vue'),
+        meta: { title: '创建简历', roles: ['CANDIDATE'] }
+      },
+      {
+        path: 'resume/edit/:id',
+        name: 'ResumeEdit',
+        component: () => import('@/views/candidate/ResumeEdit.vue'),
+        meta: { title: '编辑简历', roles: ['CANDIDATE'] }
+      },
+      {
+        path: 'resume/preview/:id',
+        name: 'ResumePreview',
+        component: () => import('@/views/candidate/ResumePreview.vue'),
+        meta: { title: '预览简历', roles: ['CANDIDATE'] }
+      },
+      {
+        path: 'interviews',
+        name: 'MyInterviews',
+        component: () => import('@/views/candidate/MyInterviews.vue'),
+        meta: { title: '我的面试', roles: ['CANDIDATE'] }
+      },
+      {
+        path: 'interview/:id',
+        name: 'InterviewDetail',
+        component: () => import('@/views/candidate/InterviewDetail.vue'),
+        meta: { title: '面试详情', roles: ['CANDIDATE'] }
       },
       {
         path: 'interview-room/:roomCode',

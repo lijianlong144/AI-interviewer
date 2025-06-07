@@ -107,7 +107,7 @@ public class InterviewProcessController {
     }
 
     /**
-     * 生成面试报告
+     * 生成面试报告TODO 还没做相关的的功能，先不做测试
      */
     @PostMapping("/report/{interviewId}")
     public Result<Long> generateInterviewReport(@PathVariable("interviewId") Long interviewId) {

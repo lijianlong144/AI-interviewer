@@ -10,9 +10,17 @@
           text-color="#fff"
           active-text-color="#409EFF"
         >
-          <el-menu-item index="/candidate/dashboard">
+          <el-menu-item index="/candidate/positions">
+            <el-icon><Search /></el-icon>
+            <span>浏览职位</span>
+          </el-menu-item>
+          <el-menu-item index="/candidate/interviews">
             <el-icon><Calendar /></el-icon>
             <span>我的面试</span>
+          </el-menu-item>
+          <el-menu-item index="/candidate/resume">
+            <el-icon><Document /></el-icon>
+            <span>简历管理</span>
           </el-menu-item>
           <el-menu-item index="/candidate/profile">
             <el-icon><User /></el-icon>
@@ -57,6 +65,7 @@
 import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/userStore'
+import { Calendar, User, Document, Search, ArrowDown } from '@element-plus/icons-vue'
 
 const route = useRoute()
 const router = useRouter()

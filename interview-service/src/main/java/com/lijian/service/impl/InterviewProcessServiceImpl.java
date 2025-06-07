@@ -214,7 +214,7 @@ public class InterviewProcessServiceImpl implements InterviewProcessService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public boolean confirmInterview(Long interviewId, boolean confirmed, String reason) {
         // 获取面试信息
         Interview interview = interviewService.getById(interviewId);

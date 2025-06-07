@@ -177,7 +177,6 @@ public class EmailServiceImpl extends ServiceImpl<EmailLogMapper, EmailLog> impl
         try {
             // 确保sendDate变量存在
             if (!variables.containsKey("sendDate")) {
-                // 格式化当前日期为易读格式
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
                 variables.put("sendDate", LocalDateTime.now().format(formatter));
             }
@@ -185,41 +184,24 @@ public class EmailServiceImpl extends ServiceImpl<EmailLogMapper, EmailLog> impl
             // 渲染模板内容
             Context context = new Context();
             context.setVariables(variables);
-            
-            // 先尝试处理主题中的变量
-            Context subjectContext = new Context();
-            subjectContext.setVariables(variables);
-            String processedSubject = emailTemplateEngine.process(subject, subjectContext);
-            
-            // 使用模板引擎处理模板文件
-            String content = null;
-            
-            try {
-                // 尝试使用完整路径
-                content = templateEngine.process("mail/" + templateName, context);
-            } catch (Exception e1) {
-                System.out.println("使用mail/前缀失败: " + e1.getMessage());
-                try {
-                    // 尝试不使用前缀
-                    content = templateEngine.process(templateName, context);
-                } catch (Exception e2) {
-                    System.out.println("不使用前缀失败: " + e2.getMessage());
-                    // 最后尝试使用emailTemplateEngine
-                    content = emailTemplateEngine.process(templateName, context);
-                }
-            }
-            
+
+            // 打印调试信息
+            System.out.println("=== 邮件模板调试信息 ===");
+            System.out.println("模板名称: " + templateName);
+            System.out.println("变量: " + variables);
+
+            // 只使用emailTemplateEngine
+            String content = emailTemplateEngine.process(templateName, context);
+
             if (content == null || content.trim().isEmpty()) {
                 throw new RuntimeException("无法渲染模板: " + templateName);
             }
-            
-            // 打印调试信息
-            System.out.println("模板名称: " + templateName);
-            System.out.println("变量: " + variables);
-            System.out.println("渲染后内容前100字符: " + content.substring(0, Math.min(100, content.length())));
+
+            System.out.println("渲染后内容前200字符: " + content.substring(0, Math.min(200, content.length())));
+            System.out.println("========================");
 
             // 发送邮件
-            return sendHtmlEmail(to, processedSubject, content);
+            return sendHtmlEmail(to, subject, content);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("处理邮件模板文件失败: " + e.getMessage(), e);

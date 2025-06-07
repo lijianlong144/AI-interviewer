@@ -103,7 +103,8 @@ public class ApplicationController {
     /**
      * 获取申请状态统计（HR操作）
      */
-    @GetMapping("/statistics")
+//    @GetMapping("/statistics")
+    @GetMapping("/stats")
     public Result<Map<String, Long>> getStatusStatistics() {
         Map<String, Long> statistics = applicationService.getStatusStatistics();
         return Result.success(statistics);

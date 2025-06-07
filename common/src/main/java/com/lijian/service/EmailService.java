@@ -33,11 +33,11 @@ public interface EmailService extends IService<EmailLog> {
     /**
      * 使用数据库模板发送邮件
      * @param to 收件人
-     * @param templateCode 模板代码
+     * @param templateName 模板名字
      * @param variables 模板变量
      * @return 邮件日志ID
      */
-    Long sendTemplateEmail(String to, String templateCode, Map<String, Object> variables);
+    Long sendTemplateEmail(String to, String templateName, Map<String, Object> variables);
 
     /**
      * 使用模板文件发送邮件

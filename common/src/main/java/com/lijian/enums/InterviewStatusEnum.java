@@ -12,7 +12,11 @@ public enum InterviewStatusEnum {
      * 待进行
      */
     PENDING("PENDING", "待进行"),
-    
+    /**
+     * 确认面试的
+     */
+    CONFIRMED("CONFIRMED", "确认参加面试"),
+
     /**
      * 进行中
      */
