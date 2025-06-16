@@ -1,5 +1,6 @@
 package com.lijian.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -80,9 +81,26 @@ public class Interview extends BaseEntity {
      */
     private BigDecimal totalScore;
 
+    /**
+     * 职位ID
+     */
     private Long positionId;
+    
+    /**
+     * 申请ID
+     */
     private Long applicationId;
+    
+    /**
+     * 简历ID
+     */
+    
+    @TableField("resume_id")
+    private Long resumeId;
 
     private String description;
     private String title;
 }
+
+
+

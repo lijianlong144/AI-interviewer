@@ -1,9 +1,12 @@
 package com.lijian.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.lijian.dto.InterviewDTO;
 import com.lijian.entity.Interview;
 import com.lijian.result.Result;
 import com.lijian.service.InterviewService;
+import com.lijian.utils.SecurityUtils;
+import com.lijian.enums.InterviewStatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -90,24 +93,51 @@ public class InterviewController {
         Page<Interview> resultPage = interviewService.pageInterviews(page, status, position, candidateId, interviewerId);
         return Result.success(resultPage);
     }
+    
+    /**
+     * 分页查询面试列表，包含候选人姓名
+     */
+    @GetMapping("/page/with-candidate")
+    public Result<Page<InterviewDTO>> pageInterviewsWithCandidate(
+                                                  @RequestParam(value = "current", defaultValue = "1") Integer current,
+                                                  @RequestParam(value = "size", defaultValue = "10") Integer size,
+                                                  @RequestParam(value = "status", required = false) String status,
+                                                  @RequestParam(value = "position", required = false) String position,
+                                                  @RequestParam(value = "candidateId", required = false) Long candidateId,
+                                                  @RequestParam(value = "candidateName", required = false) String candidateName) {
+        Page<InterviewDTO> page = new Page<>(current, size);
+        Page<InterviewDTO> resultPage = interviewService.pageInterviewsWithCandidate(
+            page, status, position, candidateId, null, candidateName);
+        return Result.success(resultPage);
+    }
 
     /**
-     * 开始面试
+     * 开始面试 (通过房间号)
      */
-    @PostMapping("/start/{id}")
-    public Result<Boolean> startInterview(@PathVariable("id") Long id) {
-        boolean result = interviewService.startInterview(id);
+    @PostMapping("/start")
+    public Result<Boolean> startInterview(@RequestParam("roomCode") String roomCode) {
+        boolean result = interviewService.startInterviewByRoomCode(roomCode);
         return Result.success(result);
     }
 
     /**
-     * 结束面试
+     * 结束面试 (通过房间号)
      */
-    @PostMapping("/end/{id}")
-    public Result<Boolean> endInterview(@PathVariable("id") Long id) {
-        boolean result = interviewService.endInterview(id);
+    @PostMapping("/end")
+    public Result<Boolean> endInterview(@RequestParam("roomCode") String roomCode) {
+        boolean result = interviewService.endInterviewByRoomCode(roomCode);
         return Result.success(result);
     }
+    // /**
+    //  * 结束面试 (通过房间号)
+    //  */
+    // @PostMapping("/end")
+    // public Result<Boolean> endInterviewById(@RequestParam("InterviewId") String InterviewId) {
+
+
+    //     boolean result = interviewService.endInterviewByRoomCode(roomCode);
+    //     return Result.success(result);
+    // }
 
     /**
      * 取消面试
@@ -142,8 +172,60 @@ public class InterviewController {
      */
     @GetMapping("/room/{roomCode}")
     public Result<Interview> getByRoomCode(@PathVariable("roomCode") String roomCode) {
+        // 验证房间号格式
+        if (!roomCode.matches("^IV-\\d{6}-[a-zA-Z0-9]{8}$")) {
+            return Result.error("房间号格式不正确，正确格式为：IV-xxxxxx-xxxxxxxx");
+        }
+        
         Interview interview = interviewService.getByRoomCode(roomCode);
-        return Result.success(interview);
+        
+        // 检查面试是否存在
+        if (interview == null) {
+            return Result.error("房间号不存在，请确认后重试");
+        }
+
+        // 检查面试状态
+        if (InterviewStatusEnum.CANCELLED.getCode().equals(interview.getStatus())) {
+            return Result.error("该面试已取消");
+        }
+        
+        // 检查面试时间
+        if (interview.getScheduledTime() != null && 
+            interview.getScheduledTime().isAfter(LocalDateTime.now().plusHours(24))) {
+            return Result.error("面试尚未开始，请在预定时间前后进入");
+        }
+
+        // 检查当前用户是否有权限访问该面试
+        Long currentUserId = SecurityUtils.getCurrentUserId();
+        if (interview.getCandidateId().equals(currentUserId) || 
+            interview.getInterviewerId().equals(currentUserId) || 
+            interview.getCreatorId().equals(currentUserId)) {
+            return Result.success(interview);
+        } else {
+            return Result.error("无权限访问此面试");
+        }
+    }
+
+    /**
+     * 分页查询当前候选人的面试列表
+     */
+    @GetMapping("/candidate/page")
+    public Result<Page<Interview>> pageCandidateInterviews(
+            @RequestParam(value = "current", defaultValue = "1") Integer current,
+            @RequestParam(value = "size", defaultValue = "10") Integer size,
+            @RequestParam(value = "status", required = false) String status,
+            @RequestParam(value = "keyword", required = false) String keyword,
+            @RequestParam(value = "startDate", required = false) String startDate,
+            @RequestParam(value = "endDate", required = false) String endDate) {
+        
+        // 获取当前登录的候选人ID
+        Long candidateId = SecurityUtils.getCurrentUserId();
+        
+        Page<Interview> page = new Page<>(current, size);
+        Page<Interview> resultPage = interviewService.pageCandidateInterviews(
+                page, candidateId, status, keyword, startDate, endDate);
+        
+        return Result.success(resultPage);
     }
 
     /**

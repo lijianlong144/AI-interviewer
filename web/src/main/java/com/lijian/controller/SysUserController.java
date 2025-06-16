@@ -111,7 +111,7 @@ public class SysUserController {
     }
     
     /**
-     * 获取用户角色列表
+     * 获取用户角色列表------已经删除
      */
     @GetMapping("/{userId}/roles")
     public Result<List<SysRole>> getUserRoles(@PathVariable("userId") Long userId) {

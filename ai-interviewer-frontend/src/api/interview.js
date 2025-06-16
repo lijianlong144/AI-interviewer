@@ -46,12 +46,13 @@ export function startInterview(interviewId) {
 
 /**
  * 结束面试
- * @param {number} interviewId - 面试ID
+ * @param {string} roomCode - 面试房间号
  */
-export function endInterview(interviewId) {
+export function endInterview(roomCode) {
   return request({
-    url: `/interview/end/${interviewId}`,
-    method: 'post'
+    url: '/interview/end',
+    method: 'post',
+    params: { roomCode }
   })
 }
 
@@ -118,6 +119,15 @@ export function getInterviewPage(params) {
   })
 }
 
+// 分页查询面试，包含候选人姓名
+export function getInterviewPageWithCandidate(params) {
+  return request({
+    url: '/interview/page/with-candidate',
+    method: 'get',
+    params
+  })
+}
+
 // 获取面试统计信息
 export function getInterviewStatistics(params) {
   return request({
@@ -140,5 +150,28 @@ export function getInterviewsByCandidate(candidateId) {
   return request({
     url: `/interview/candidate/${candidateId}`,
     method: 'get'
+  })
+}
+
+/**
+ * 根据房间号获取面试信息
+ * @param {string} roomCode - 面试房间号
+ */
+export function getInterviewByRoomCode(roomCode) {
+  return request({
+    url: `/interview/room/${roomCode}`,
+    method: 'get'
+  })
+}
+
+/**
+ * 分页查询候选人的面试列表
+ * @param {Object} params - 查询参数
+ */
+export function getCandidateInterviewPage(params) {
+  return request({
+    url: '/interview/candidate/page',
+    method: 'get',
+    params
   })
 } 

@@ -88,3 +88,19 @@ export function getApplicationStats() {
         method: 'get'
     })
 }
+
+/**
+ * 根据职位ID获取申请列表
+ * @param {Object} params - 查询参数
+ * @param {number} params.positionId - 职位ID
+ * @param {string} [params.status] - 申请状态
+ * @param {number} [params.current] - 当前页码
+ * @param {number} [params.size] - 每页大小
+ */
+export function getApplicationsByPosition(params) {
+    return request({
+        url: '/application/position/' + params.positionId,
+        method: 'get',
+        params
+    })
+}

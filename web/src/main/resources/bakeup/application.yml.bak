@@ -1,0 +1,85 @@
+server:
+  port: 8083
+
+spring:
+  # 倒入其他配置文件
+  config:
+    import:
+      - classpath:application-ai.yml
+      - classpath:application-mail.yml
+
+  application:
+    name: ai-interviewer
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: 1609397402@qq.com # lijianlong144@foxmail.com
+    password: wlkzmovkwrbsbadc
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+    default-encoding: UTF-8
+
+
+
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/ai_interviewer?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: root
+    password: 1314
+
+
+
+  jackson:
+    date-time-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+
+  ai:
+    dashscope:
+      api-key: ${AI_DASHSCOPE_API_KEY}
+
+  # 删除这部分，这是OAuth2的配置，不是我们用的JWT
+  # security:
+  #   oauth2:
+  #     resourceserver:
+  #       jwt:
+  #         jws-algorithms:
+
+
+# JWT配置 - 这是自定义的配置
+jwt:
+  secret: AI-interviewer-secret-key-2024-this-is-a-very-long-secret-key
+  expiration: 86400 # 24小时，单位：秒
+
+mybatis-plus:
+  type-aliases-package: com.lijian.**.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+#自定义mail
+email:
+  from: 1609397402@qq.com  # 发件人邮箱
+  fromName: AI面试系统      # 发件人名称
+
+# 开发环境
+#app:
+#  debug: true
+#
+#  profiles:
+#    active: dev
+
+# 生产环境使用
+# app:
+#   debug: false
+
+#   profiles:
+#     active: prod

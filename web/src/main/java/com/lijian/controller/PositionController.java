@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import java.util.List;
 
@@ -79,7 +80,13 @@ public class PositionController {
                                                @RequestParam(value = "size", defaultValue = "10") Integer size,
                                                @RequestParam(value = "title", required = false) String title,
                                                @RequestParam(value = "department", required = false) String department,
-                                               @RequestParam(value = "status", required = false) Integer status) {
+                                               @RequestParam(value = "status", required = false) Integer status,
+                                               HttpServletResponse response) {
+        // 添加响应头防止浏览器缓存
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setHeader("Expires", "0");
+        
         Page<Position> page = new Page<>(current, size);
         Page<Position> resultPage = positionService.pagePositions(page, title, department, status);
         return Result.success(resultPage);

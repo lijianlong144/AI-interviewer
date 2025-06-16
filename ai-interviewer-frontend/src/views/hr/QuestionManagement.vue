@@ -103,48 +103,7 @@
         </el-table-column>
         <el-table-column label="操作" fixed="right" width="180" align="center">
           <template #default="scope">
-            <el-button
-              link
-              type="primary"
-              size="small"
-              @click="handleView(scope.row)"
-            >
-              查看
-            </el-button>
-            <el-button
-              link
-              type="primary"
-              size="small"
-              @click="handleEdit(scope.row)"
-            >
-              编辑
-            </el-button>
-            <el-button
-              v-if="scope.row.status === 1"
-              link
-              type="danger"
-              size="small"
-              @click="handleStatusChange(scope.row, 0)"
-            >
-              禁用
-            </el-button>
-            <el-button
-              v-else
-              link
-              type="success"
-              size="small"
-              @click="handleStatusChange(scope.row, 1)"
-            >
-              启用
-            </el-button>
-            <el-button
-              link
-              type="danger"
-              size="small"
-              @click="handleDelete(scope.row)"
-            >
-              删除
-            </el-button>
+            <TableActionButtons :buttons="getActionButtons(scope.row)" />
           </template>
         </el-table-column>
       </el-table>
@@ -350,6 +309,15 @@ import {
   deleteQuestion,
   updateQuestionStatus
 } from '@/api/question'
+import { 
+  Search, 
+  View, 
+  EditPen, 
+  Delete, 
+  Check, 
+  Close 
+} from '@element-plus/icons-vue'
+import TableActionButtons from '@/components/TableActionButtons.vue'
 
 // 搜索条件
 const searchKeyword = ref('')
@@ -704,6 +672,49 @@ const handleDelete = (row) => {
       ElMessage.error('删除题目失败')
     }
   }).catch(() => {})
+}
+
+// 获取操作按钮配置
+const getActionButtons = (row) => {
+  const buttons = [
+    {
+      text: '查看',
+      type: 'primary',
+      icon: View,
+      onClick: () => handleView(row)
+    },
+    {
+      text: '编辑',
+      type: 'info',
+      icon: EditPen,
+      onClick: () => handleEdit(row)
+    }
+  ]
+  
+  if (row.status === 1) {
+    buttons.push({
+      text: '禁用',
+      type: 'danger',
+      icon: Close,
+      onClick: () => handleStatusChange(row, 0)
+    })
+  } else {
+    buttons.push({
+      text: '启用',
+      type: 'success',
+      icon: Check,
+      onClick: () => handleStatusChange(row, 1)
+    })
+  }
+  
+  buttons.push({
+    text: '删除',
+    type: 'danger',
+    icon: Delete,
+    onClick: () => handleDelete(row)
+  })
+  
+  return buttons
 }
 
 // 初始化加载数据

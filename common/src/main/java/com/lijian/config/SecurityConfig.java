@@ -98,10 +98,13 @@ public class SecurityConfig {
                                 "/api/auth/login",
                                 "/api/auth/register",
                                 "/api/auth/refresh",
+                                "/api/ai/interview/**",
                                 "/test/**",
                                 "/error",
                                 "/swagger-ui/**",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                // 放行Druid监控页面
+                                "/druid/**"
                         ).permitAll()
                         // 需要特定角色的接口
                         .requestMatchers("/api/admin/**").hasRole("INTERVIEWER")

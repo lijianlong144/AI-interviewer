@@ -57,12 +57,12 @@
         <el-table-column prop="applicationNo" label="申请编号" width="150" />
         <el-table-column label="候选人" width="120">
           <template #default="scope">
-            {{ scope.row.candidateName || '-' }}
+            {{ scope.row.candidateName || scope.row.candidateRealName || '-' }}
           </template>
         </el-table-column>
         <el-table-column label="申请职位" min-width="200">
           <template #default="scope">
-            {{ scope.row.positionTitle || '-' }}
+            {{ scope.row.positionTitle || scope.row.positionName || scope.row.position || '-' }}
           </template>
         </el-table-column>
         <el-table-column prop="applyTime" label="申请时间" width="180">
@@ -77,31 +77,36 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="200" fixed="right">
+        <el-table-column label="操作" min-width="280" fixed="right" align="center">
           <template #default="scope">
-            <el-button
-                type="primary"
-                link
-                @click.stop="viewDetail(scope.row)"
-            >
-              查看详情
-            </el-button>
-            <el-button
-                v-if="scope.row.status === 'PENDING'"
-                type="success"
-                link
-                @click.stop="screenApplication(scope.row, 'PASSED')"
-            >
-              通过
-            </el-button>
-            <el-button
-                v-if="scope.row.status === 'PENDING'"
-                type="danger"
-                link
-                @click.stop="screenApplication(scope.row, 'REJECTED')"
-            >
-              拒绝
-            </el-button>
+            <div class="action-buttons">
+              <el-button
+                  type="primary"
+                  size="small"
+                  @click.stop="viewDetail(scope.row)"
+              >
+                <el-icon><View /></el-icon>
+                查看详情
+              </el-button>
+              <el-button
+                  v-if="scope.row.status === 'PENDING'"
+                  type="success"
+                  size="small"
+                  @click.stop="screenApplication(scope.row, 'PASSED')"
+              >
+                <el-icon><Check /></el-icon>
+                通过
+              </el-button>
+              <el-button
+                  v-if="scope.row.status === 'PENDING'"
+                  type="danger"
+                  size="small"
+                  @click.stop="screenApplication(scope.row, 'REJECTED')"
+              >
+                <el-icon><Close /></el-icon>
+                拒绝
+              </el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -109,8 +114,8 @@
       <!-- 分页 -->
       <div class="pagination-container">
         <el-pagination
-            v-model:current-page="currentPage"
-            v-model:page-size="pageSize"
+            :current-page="currentPage"
+            :page-size="pageSize"
             :page-sizes="[10, 20, 50]"
             :total="total"
             layout="total, sizes, prev, pager, next, jumper"
@@ -159,6 +164,7 @@ import { ElMessage } from 'element-plus'
 import { getApplicationPage, updateApplicationStatus, getApplicationStats } from '@/api/application'
 import { getPositionPage } from '@/api/position'
 import dayjs from 'dayjs'
+import { View, Check, Close } from '@element-plus/icons-vue'
 
 const router = useRouter()
 
@@ -243,13 +249,22 @@ const confirmScreen = async () => {
   try {
     screenLoading.value = true
 
-    await updateApplicationStatus(
+    const response = await updateApplicationStatus(
         currentApplication.value.id,
         screenStatus.value,
         screenForm.remark
     )
 
-    ElMessage.success(screenStatus.value === 'PASSED' ? '已通过初筛' : '已拒绝申请')
+    if (screenStatus.value === 'PASSED') {
+      ElMessage({
+        message: '已通过初筛，系统已自动创建面试',
+        type: 'success',
+        duration: 3000
+      })
+    } else {
+      ElMessage.success('已拒绝申请')
+    }
+    
     screenDialogVisible.value = false
 
     // 刷新列表
@@ -393,5 +408,22 @@ onMounted(() => {
 
 .el-table {
   cursor: pointer;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.action-buttons .el-button {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
 }
 </style>

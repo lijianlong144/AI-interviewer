@@ -88,6 +88,12 @@ const routes = [
         name: 'QuestionManagement',
         component: () => import('@/views/hr/QuestionManagement.vue'),
         meta: { title: '题库管理', roles: ['HR'] }
+      },
+      {
+        path: 'positions',
+        name: 'PositionManagement',
+        component: () => import('@/views/hr/PositionManagement.vue'),
+        meta: { title: '职位管理', roles: ['HR'] }
       }
     ]
   },
@@ -142,7 +148,7 @@ const routes = [
       {
         path: 'interviews',
         name: 'MyInterviews',
-        component: () => import('@/views/candidate/MyInterviews.vue'),
+        component: () => import('@/views/candidate/InterviewList.vue'),
         meta: { title: '我的面试', roles: ['CANDIDATE'] }
       },
       {
@@ -150,12 +156,6 @@ const routes = [
         name: 'InterviewDetail',
         component: () => import('@/views/candidate/InterviewDetail.vue'),
         meta: { title: '面试详情', roles: ['CANDIDATE'] }
-      },
-      {
-        path: 'interview-room/:roomCode',
-        name: 'CandidateRoom',
-        component: () => import('@/views/candidate/InterviewRoom.vue'),
-        meta: { title: '面试房间', roles: ['CANDIDATE'] }
       },
       {
         path: 'profile',
@@ -174,8 +174,21 @@ const routes = [
         name: 'CandidateInterviewDetail',
         component: () => import('@/views/candidate/InterviewDetail.vue'),
         meta: { title: '面试详情', roles: ['CANDIDATE'] }
+      },
+      {
+        path: 'interview-room/:roomCode',
+        name: 'CandidateInterviewRoom',
+        component: () => import('@/views/interview/InterviewRoom.vue'),
+        meta: { title: 'AI面试房间', roles: ['CANDIDATE'] }
       }
     ]
+  },
+  // 公共面试房间路由（不需要布局）
+  {
+    path: '/interview-room/:roomCode',
+    name: 'InterviewRoom',
+    component: () => import('@/views/interview/InterviewRoom.vue'),
+    meta: { title: 'AI面试房间', requiresAuth: true }
   },
   {
     path: '/:pathMatch(.*)*',

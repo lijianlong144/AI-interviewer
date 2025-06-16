@@ -2,6 +2,7 @@ package com.lijian.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lijian.dto.InterviewDTO;
 import com.lijian.entity.Interview;
 
 import java.time.LocalDateTime;
@@ -50,6 +51,19 @@ public interface InterviewService extends IService<Interview> {
      * @return 面试分页列表
      */
     Page<Interview> pageInterviews(Page<Interview> page, String status, String position, Long candidateId, Long interviewerId);
+
+    /**
+     * 分页查询面试列表，包含候选人姓名
+     * @param page 分页参数
+     * @param status 状态
+     * @param position 职位
+     * @param candidateId 候选人ID
+     * @param interviewerId 面试官ID
+     * @param candidateName 候选人姓名(模糊查询)
+     * @return 面试分页列表
+     */
+    Page<InterviewDTO> pageInterviewsWithCandidate(Page<InterviewDTO> page, String status, String position, 
+                                                 Long candidateId, Long interviewerId, String candidateName);
 
     /**
      * 开始面试
@@ -157,4 +171,31 @@ public interface InterviewService extends IService<Interview> {
      * @return 取消的面试数量
      */
     int autoCancelTimeoutInterviews(Integer timeoutMinutes);
+
+    /**
+     * 通过房间号开始面试
+     * @param roomCode 房间号
+     * @return 是否成功
+     */
+    boolean startInterviewByRoomCode(String roomCode);
+
+    /**
+     * 通过房间号结束面试
+     * @param roomCode 房间号
+     * @return 是否成功
+     */
+    boolean endInterviewByRoomCode(String roomCode);
+
+    /**
+     * 分页查询当前候选人的面试列表
+     * @param page 分页参数
+     * @param candidateId 候选人ID
+     * @param status 状态
+     * @param keyword 关键词(面试编号或职位)
+     * @param startDate 开始日期
+     * @param endDate 结束日期
+     * @return 面试分页列表
+     */
+    Page<Interview> pageCandidateInterviews(Page<Interview> page, Long candidateId, String status, 
+                                           String keyword, String startDate, String endDate);
 }

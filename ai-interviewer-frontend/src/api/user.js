@@ -79,4 +79,16 @@ export function updateUserStatus(id, status) {
       status
     }
   })
+}
+
+/**
+ * 根据角色获取用户列表
+ * @param {string} role - 用户角色
+ */
+export function getUsersByRole(role) {
+    return request({
+        url: '/user/role',
+        method: 'get',
+        params: { role }
+    })
 } 

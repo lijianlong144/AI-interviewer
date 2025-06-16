@@ -17,31 +17,36 @@
           <template #prefix>
             <el-icon><Search /></el-icon>
           </template>
+          <template #append>
+            <el-button @click="handleSearch">搜索</el-button>
+          </template>
         </el-input>
       </div>
       
-      <div class="filter-box">
-        <el-select v-model="statusFilter" placeholder="面试状态" clearable @change="handleSearch" class="status-select">
-          <el-option label="全部" value="" />
-          <el-option label="待开始" value="PENDING" />
-          <el-option label="进行中" value="ONGOING" />
-          <el-option label="已完成" value="COMPLETED" />
-          <el-option label="已取消" value="CANCELLED" />
-        </el-select>
-      </div>
-      
-      <div class="date-range-box">
-        <el-date-picker
-          v-model="dateRange"
-          type="daterange"
-          range-separator="至"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
-          format="YYYY-MM-DD"
-          value-format="YYYY-MM-DD"
-          @change="handleSearch"
-          class="date-picker"
-        />
+      <div class="filter-group">
+        <div class="filter-box">
+          <el-select v-model="statusFilter" placeholder="面试状态" clearable @change="handleSearch" class="status-select">
+            <el-option label="全部" value="" />
+            <el-option label="待开始" value="PENDING" />
+            <el-option label="进行中" value="ONGOING" />
+            <el-option label="已完成" value="COMPLETED" />
+            <el-option label="已取消" value="CANCELLED" />
+          </el-select>
+        </div>
+        
+        <div class="date-range-box">
+          <el-date-picker
+            v-model="dateRange"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            format="YYYY-MM-DD"
+            value-format="YYYY-MM-DD"
+            @change="handleSearch"
+            class="date-picker"
+          />
+        </div>
       </div>
       
       <div class="action-box">
@@ -59,68 +64,24 @@
         :header-cell-style="{background:'#f5f7fa'}"
         :cell-style="{padding: '8px 0'}"
       >
-        <el-table-column prop="interviewNo" label="面试编号" width="120" show-overflow-tooltip />
-        <el-table-column prop="candidateName" label="候选人" width="90" align="center" />
-        <el-table-column prop="position" label="应聘职位" width="120" show-overflow-tooltip />
-        <el-table-column prop="interviewerName" label="面试官" width="90" align="center" />
-        <el-table-column prop="scheduledTime" label="预约时间" width="140" align="center">
+        <el-table-column prop="interviewNo" label="面试编号" min-width="140" show-overflow-tooltip />
+        <el-table-column prop="candidateName" label="候选人" min-width="100" align="center" />
+        <el-table-column prop="position" label="应聘职位" min-width="140" show-overflow-tooltip />
+        <el-table-column prop="scheduledTime" label="预约时间" min-width="160" align="center">
           <template #default="scope">
             {{ formatDateTime(scope.row.scheduledTime) }}
           </template>
         </el-table-column>
-        <el-table-column prop="status" label="状态" width="80" align="center">
+        <el-table-column prop="status" label="状态" min-width="100" align="center">
           <template #default="scope">
             <el-tag :type="getStatusType(scope.row.status)" size="small">
               {{ getStatusText(scope.row.status) }}
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" width="220" align="center">
+        <el-table-column label="操作" fixed="right" min-width="240" align="center">
           <template #default="scope">
-            <el-button
-              link
-              type="primary"
-              size="small"
-              @click="handleView(scope.row)"
-            >
-              查看
-            </el-button>
-            <el-button
-              v-if="scope.row.status === 'PENDING'"
-              link
-              type="primary"
-              size="small"
-              @click="handleEdit(scope.row)"
-            >
-              编辑
-            </el-button>
-            <el-button
-              v-if="scope.row.status === 'PENDING'"
-              link
-              type="success"
-              size="small"
-              @click="handleStart(scope.row)"
-            >
-              开始面试
-            </el-button>
-            <el-button
-              v-if="scope.row.status === 'ONGOING'"
-              link
-              type="warning"
-              size="small"
-              @click="handleEnd(scope.row)"
-            >
-              结束面试
-            </el-button>
-            <el-button
-              v-if="scope.row.status === 'PENDING'"
-              link
-              type="danger"
-              size="small"
-              @click="handleCancel(scope.row)"
-            >
-              取消面试
-            </el-button>
+            <TableActionButtons :buttons="getActionButtons(scope.row)" />
           </template>
         </el-table-column>
       </el-table>
@@ -144,15 +105,25 @@
     <el-dialog
       v-model="dialogVisible"
       :title="isEdit ? '编辑面试' : '创建面试'"
-      width="600px"
+      width="650px"
       @closed="resetForm"
     >
       <el-form
         ref="formRef"
         :model="form"
         :rules="rules"
-        label-width="100px"
+        label-width="120px"
       >
+        <!-- 编辑模式下显示的只读字段 -->
+        <template v-if="isEdit">
+          <el-form-item label="面试编号">
+            <el-input v-model="form.interviewNo" disabled />
+          </el-form-item>
+          <el-form-item label="房间号">
+            <el-input v-model="form.roomCode" disabled />
+          </el-form-item>
+        </template>
+        
         <el-form-item label="候选人" prop="candidateId" v-if="!isEdit">
           <el-select
             v-model="form.candidateId"
@@ -179,40 +150,33 @@
         <el-form-item label="候选人" v-else>
           <el-input v-model="form.candidateName" disabled />
         </el-form-item>
+        
         <el-form-item label="应聘职位" prop="position">
-          <el-input v-model="form.position" />
+          <el-input v-model="form.position" :disabled="isEdit" />
         </el-form-item>
-        <el-form-item label="面试官" prop="interviewerId">
-          <el-select
-            v-model="form.interviewerId"
-            filterable
-            remote
-            reserve-keyword
-            placeholder="请输入面试官姓名"
-            :remote-method="searchInterviewers"
-            :loading="interviewerLoading"
-          >
-            <el-option
-              v-for="item in interviewerOptions"
-              :key="item.id"
-              :label="item.realName"
-              :value="item.id"
-            >
-              <div class="interviewer-option">
-                <span>{{ item.realName }}</span>
-                <span class="interviewer-info">{{ item.username }}</span>
-              </div>
-            </el-option>
-          </el-select>
-        </el-form-item>
+        
         <el-form-item label="预约时间" prop="scheduledTime">
           <el-date-picker
             v-model="form.scheduledTime"
             type="datetime"
             placeholder="选择日期时间"
             format="YYYY-MM-DD HH:mm"
-            value-format="YYYY-MM-DDT00:00:00"
+            value-format="YYYY-MM-DDTHH:mm:00"
           />
+        </el-form-item>
+        
+        <el-form-item label="面试状态" prop="status" v-if="isEdit">
+          <el-select v-model="form.status" placeholder="请选择面试状态">
+            <el-option label="待开始" value="PENDING" />
+            <el-option label="进行中" value="ONGOING" />
+            <el-option label="已完成" value="COMPLETED" />
+            <el-option label="已取消" value="CANCELLED" />
+          </el-select>
+        </el-form-item>
+        
+        <el-form-item label="面试时长(分钟)" prop="duration" v-if="isEdit">
+          <el-input-number v-model="form.duration" :min="0" :max="240" />
+          <span class="unit-label">分钟</span>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -234,10 +198,10 @@
         :column="2"
         border
       >
-        <el-descriptions-item label="面试编号">{{ currentInterview.interviewNo }}</el-descriptions-item>
+        <el-descriptions-item label="面试编号" :span="2">{{ currentInterview.interviewNo }}</el-descriptions-item>
+        <el-descriptions-item label="房间号" :span="2">{{ currentInterview.roomCode || '-' }}</el-descriptions-item>
         <el-descriptions-item label="候选人">{{ currentInterview.candidateName }}</el-descriptions-item>
         <el-descriptions-item label="应聘职位">{{ currentInterview.position }}</el-descriptions-item>
-        <el-descriptions-item label="面试官">{{ currentInterview.interviewerName || '-' }}</el-descriptions-item>
         <el-descriptions-item label="预约时间">{{ formatDateTime(currentInterview.scheduledTime) }}</el-descriptions-item>
         <el-descriptions-item label="状态">
           <el-tag :type="getStatusType(currentInterview.status)">
@@ -248,8 +212,7 @@
         <el-descriptions-item label="结束时间">{{ currentInterview.endTime ? formatDateTime(currentInterview.endTime) : '-' }}</el-descriptions-item>
         <el-descriptions-item label="面试时长">{{ currentInterview.duration ? `${currentInterview.duration}分钟` : '-' }}</el-descriptions-item>
         <el-descriptions-item label="面试评分">{{ currentInterview.totalScore || '-' }}</el-descriptions-item>
-        <el-descriptions-item label="房间号">{{ currentInterview.roomCode || '-' }}</el-descriptions-item>
-        <el-descriptions-item label="创建时间">{{ formatDateTime(currentInterview.createTime) }}</el-descriptions-item>
+        <el-descriptions-item label="创建时间" :span="2">{{ formatDateTime(currentInterview.createTime) }}</el-descriptions-item>
       </el-descriptions>
 
       <div v-if="currentInterview && currentInterview.status === 'COMPLETED'" class="interview-result">
@@ -271,12 +234,14 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, computed } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '@/utils/request'
 import dayjs from 'dayjs'
+import TableActionButtons from '@/components/TableActionButtons.vue'
 import { 
   getInterviewPage, 
+  getInterviewPageWithCandidate,
   createInterview, 
   updateInterview, 
   getInterviewDetail,
@@ -284,6 +249,14 @@ import {
   endInterview,
   cancelInterview
 } from '@/api/interview'
+import { 
+  View, 
+  EditPen, 
+  VideoPlay, 
+  CircleClose, 
+  VideoPause,
+  Search
+} from '@element-plus/icons-vue'
 
 // 搜索条件
 const searchKeyword = ref('')
@@ -309,31 +282,44 @@ const isEdit = ref(false)
 const formRef = ref(null)
 const form = reactive({
   id: null,
+  interviewNo: '',
+  roomCode: '',
   candidateId: null,
   candidateName: '',
   position: '',
-  interviewerId: null,
-  scheduledTime: ''
+  scheduledTime: '',
+  status: '',
+  duration: 30
 })
 
 // 表单验证规则
 const rules = {
   candidateId: [{ required: true, message: '请选择候选人', trigger: 'change' }],
   position: [{ required: true, message: '请输入应聘职位', trigger: 'blur' }],
-  interviewerId: [{ required: true, message: '请选择面试官', trigger: 'change' }],
-  scheduledTime: [{ required: true, message: '请选择预约时间', trigger: 'change' }]
+  scheduledTime: [{ required: true, message: '请选择预约时间', trigger: 'change' }],
+  status: [{ required: true, message: '请选择面试状态', trigger: 'change' }]
 }
 
 // 候选人和面试官选项
 const candidateOptions = ref([])
-const interviewerOptions = ref([])
 const candidateLoading = ref(false)
-const interviewerLoading = ref(false)
 
 // 格式化日期时间
 const formatDateTime = (datetime) => {
   if (!datetime) return '-'
   return dayjs(datetime).format('YYYY-MM-DD HH:mm')
+}
+
+// 转换日期时间格式为后端需要的格式
+const formatDateTimeForBackend = (datetime) => {
+  if (!datetime) return null
+  return dayjs(datetime).format('YYYY-MM-DDTHH:mm:00')
+}
+
+// 解析后端返回的日期时间格式
+const parseDateTimeFromBackend = (datetime) => {
+  if (!datetime) return ''
+  return dayjs(datetime).format('YYYY-MM-DDTHH:mm:00')
 }
 
 // 获取状态标签类型
@@ -384,7 +370,10 @@ const loadInterviewList = async () => {
     }
     
     if (searchKeyword.value) {
-      params.keyword = searchKeyword.value
+      // 如果有搜索关键词，尝试作为候选人姓名搜索
+      params.candidateName = searchKeyword.value
+      // 也可以作为职位搜索
+      params.position = searchKeyword.value
     }
     
     if (statusFilter.value) {
@@ -396,7 +385,8 @@ const loadInterviewList = async () => {
       params.endDate = dateRange.value[1]
     }
     
-    const response = await getInterviewPage(params)
+    // 使用新的API获取包含候选人姓名的面试列表
+    const response = await getInterviewPageWithCandidate(params)
     
     if (response.success) {
       interviewList.value = response.data.records
@@ -441,11 +431,14 @@ const resetForm = () => {
   formRef.value?.resetFields()
   Object.assign(form, {
     id: null,
+    interviewNo: '',
+    roomCode: '',
     candidateId: null,
     candidateName: '',
     position: '',
-    interviewerId: null,
-    scheduledTime: ''
+    scheduledTime: '',
+    status: '',
+    duration: 30
   })
 }
 
@@ -478,35 +471,6 @@ const searchCandidates = async (query) => {
   }
 }
 
-// 搜索面试官
-const searchInterviewers = async (query) => {
-  if (query) {
-    interviewerLoading.value = true
-    try {
-      const response = await request({
-        url: '/user/page',
-        method: 'get',
-        params: {
-          keyword: query,
-          role: 'INTERVIEWER',
-          status: 1,
-          size: 10
-        }
-      })
-      
-      if (response.success) {
-        interviewerOptions.value = response.data.records
-      }
-    } catch (error) {
-      console.error('搜索面试官失败:', error)
-    } finally {
-      interviewerLoading.value = false
-    }
-  } else {
-    interviewerOptions.value = []
-  }
-}
-
 // 提交表单
 const submitForm = async () => {
   try {
@@ -514,7 +478,17 @@ const submitForm = async () => {
     
     if (isEdit.value) {
       // 编辑面试
-      const response = await updateInterview(form)
+      const updateData = {
+        id: form.id,
+        scheduledTime: form.scheduledTime,
+        status: form.status,
+        duration: form.duration
+      }
+      
+      // 确保日期时间格式正确
+      console.log('提交前的数据:', updateData)
+      
+      const response = await updateInterview(updateData)
       
       if (response.success) {
         ElMessage.success('更新面试成功')
@@ -533,7 +507,17 @@ const submitForm = async () => {
         }
       }
       
-      const response = await createInterview(form)
+      const createData = {
+        candidateId: form.candidateId,
+        position: form.position,
+        scheduledTime: form.scheduledTime,
+        duration: form.duration
+      }
+      
+      // 确保日期时间格式正确
+      console.log('提交前的数据:', createData)
+      
+      const response = await createInterview(createData)
       
       if (response.success) {
         ElMessage.success('创建面试成功')
@@ -570,11 +554,19 @@ const handleView = async (row) => {
 const handleEdit = (row) => {
   isEdit.value = true
   form.id = row.id
+  form.interviewNo = row.interviewNo
+  form.roomCode = row.roomCode
   form.candidateId = row.candidateId
   form.candidateName = row.candidateName
   form.position = row.position
-  form.interviewerId = row.interviewerId
-  form.scheduledTime = row.scheduledTime
+  
+  // 解析后端返回的时间格式，确保时间部分正确
+  form.scheduledTime = parseDateTimeFromBackend(row.scheduledTime)
+  
+  form.status = row.status
+  form.duration = row.duration || 30
+  
+  console.log('编辑时的表单数据:', form)
   
   dialogVisible.value = true
 }
@@ -660,6 +652,52 @@ const handleCancel = (row) => {
   }).catch(() => {})
 }
 
+// 获取操作按钮配置
+const getActionButtons = (row) => {
+  const buttons = [
+    {
+      text: '查看',
+      type: 'primary',
+      icon: View,
+      onClick: () => handleView(row)
+    }
+  ]
+
+  if (row.status === 'PENDING') {
+    buttons.push({
+      text: '编辑',
+      type: 'info',
+      icon: EditPen,
+      onClick: () => handleEdit(row)
+    })
+    
+    buttons.push({
+      text: '开始面试',
+      type: 'success',
+      icon: VideoPlay,
+      onClick: () => handleStart(row)
+    })
+    
+    buttons.push({
+      text: '取消面试',
+      type: 'danger',
+      icon: CircleClose,
+      onClick: () => handleCancel(row)
+    })
+  }
+  
+  if (row.status === 'ONGOING') {
+    buttons.push({
+      text: '结束面试',
+      type: 'warning',
+      icon: VideoPause,
+      onClick: () => handleEnd(row)
+    })
+  }
+  
+  return buttons
+}
+
 // 初始化加载数据
 onMounted(() => {
   loadInterviewList()
@@ -681,6 +719,9 @@ onMounted(() => {
   gap: 15px;
   margin-bottom: 20px;
   align-items: center;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
 }
 
 .search-box {
@@ -691,6 +732,12 @@ onMounted(() => {
 
 .search-input {
   width: 100%;
+}
+
+.filter-group {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
 }
 
 .filter-box {
@@ -716,6 +763,8 @@ onMounted(() => {
 
 .table-card {
   margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
 .pagination-container {
@@ -730,14 +779,12 @@ onMounted(() => {
   width: 100%;
 }
 
-.candidate-option,
-.interviewer-option {
+.candidate-option {
   display: flex;
   justify-content: space-between;
 }
 
-.candidate-info,
-.interviewer-info {
+.candidate-info {
   color: #909399;
   font-size: 13px;
 }
@@ -754,6 +801,11 @@ onMounted(() => {
 
 .result-comment {
   margin-top: 10px;
+  color: #606266;
+}
+
+.unit-label {
+  margin-left: 10px;
   color: #606266;
 }
 </style> 

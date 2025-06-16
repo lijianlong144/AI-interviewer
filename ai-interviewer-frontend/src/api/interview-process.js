@@ -40,21 +40,17 @@ export function screenResume(applicationId, status, remark) {
 
 /**
  * 安排面试
- * @param {number} applicationId - 申请ID
- * @param {number} interviewerId - 面试官ID
- * @param {string} scheduledTime - 预约时间
- * @param {number} duration - 面试时长（分钟）
+ * @param {Object} data - 面试安排数据
+ * @param {number} data.applicationId - 申请ID
+ * @param {number} data.interviewerId - 面试官ID
+ * @param {string} data.scheduledTime - 预约时间
+ * @param {number} data.duration - 面试时长（分钟）
  */
-export function scheduleInterview(applicationId, interviewerId, scheduledTime, duration) {
+export function scheduleInterview(data) {
     return request({
         url: '/interview-process/schedule',
         method: 'post',
-        params: {
-            applicationId,
-            interviewerId,
-            scheduledTime,
-            duration
-        }
+        params: data
     })
 }
 

@@ -5,7 +5,7 @@ import { getToken } from '@/utils/auth'
 
 // 创建axios实例
 const request = axios.create({
-  baseURL: 'http://localhost:8083/api',
+  baseURL: '/api',
   timeout: 10000
 })
 
@@ -16,6 +16,17 @@ request.interceptors.request.use(
     if (token) {
       config.headers['Authorization'] = `Bearer ${token}`
     }
+    
+    // 对GET请求添加时间戳，防止缓存
+    if (config.method === 'get') {
+      if (!config.params) {
+        config.params = {}
+      }
+      if (!config.params._t) {
+        config.params._t = Date.now()
+      }
+    }
+    
     return config
   },
   error => {

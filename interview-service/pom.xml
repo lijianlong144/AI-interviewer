@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.lijian</groupId>
     <artifactId>AI-interviewer</artifactId>
-    <version>1.0.0</version>
+    <version>${revision}</version>
   </parent>
 
   <packaging>jar</packaging>
@@ -21,18 +21,23 @@
     <dependency>
       <groupId>com.baomidou</groupId>
       <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+      <version>${mybatis-plus.version}</version>
     </dependency>
     <dependency>
       <groupId>com.lijian</groupId>
       <artifactId>user-service</artifactId>
+      <version>${revision}</version>
     </dependency>
     <dependency>
       <groupId>com.lijian</groupId>
       <artifactId>common</artifactId>
+      <version>${revision}</version>
     </dependency>
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
+      <version>1.18.30</version>
+      <scope>provided</scope>
     </dependency>
 
   </dependencies>

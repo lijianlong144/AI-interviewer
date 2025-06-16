@@ -22,8 +22,8 @@ public class TestService {
     EmailService emailService;
     @Autowired
     SysUserService userService;
-    @Autowired
-    private JavaMailSender mailSender;
+//    @Autowired
+//    private JavaMailSender mailSender;
 
 
     @Test

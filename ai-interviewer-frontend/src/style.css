@@ -1,11 +1,41 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
   font-weight: 400;
 
-  color-scheme: light dark;
-  color: #213547;
-  background-color: #f0f2f5;
+  /* 主题色调 */
+  --primary-color: #2563eb; /* 蓝色 */
+  --primary-light: #3b82f6;
+  --primary-dark: #1d4ed8;
+  --success-color: #10b981; /* 绿色 */
+  --success-light: #34d399;
+  --warning-color: #f59e0b; /* 黄色 */
+  --warning-light: #fbbf24;
+  --danger-color: #ef4444;  /* 红色 */
+  --danger-light: #f87171;
+  --info-color: #6366f1;    /* 紫色 */
+  --info-light: #818cf8;
+  
+  /* 中性色调 */
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-disabled: #94a3b8;
+  --border-color: #e2e8f0;
+  --background-light: #f8fafc;
+  --background-dark: #0f172a;
+  
+  /* UI元素 */
+  --card-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s ease;
+  --border-radius-sm: 0.25rem;
+  --border-radius: 0.375rem;
+  --border-radius-lg: 0.5rem;
+  --border-radius-xl: 0.75rem;
+  --border-radius-full: 9999px;
+
+  color: var(--text-primary);
+  background-color: var(--background-light);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -15,11 +45,13 @@
 
 a {
   font-weight: 500;
-  color: #409eff;
+  color: var(--primary-color);
   text-decoration: inherit;
+  transition: color var(--transition-fast);
 }
+
 a:hover {
-  color: #66b1ff;
+  color: var(--primary-light);
 }
 
 body {
@@ -29,32 +61,177 @@ body {
   min-height: 100vh;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.2;
+  margin: 0 0 0.75rem 0;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
 h1 {
-  font-size: 1.8em;
-  line-height: 1.1;
+  font-size: 1.875rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+}
+
+p {
+  margin: 0 0 1rem 0;
 }
 
 button {
-  border-radius: 8px;
+  border-radius: var(--border-radius);
   border: 1px solid transparent;
   padding: 0.6em 1.2em;
-  font-size: 1em;
+  font-size: 0.9em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--primary-color);
+  color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: background-color var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
 }
+
 button:hover {
-  border-color: #646cff;
+  background-color: var(--primary-light);
+  transform: translateY(-2px);
 }
+
 button:focus,
 button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+  outline: 2px solid var(--primary-light);
+  outline-offset: 2px;
 }
 
 .card {
-  padding: 2em;
+  background: white;
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--card-shadow);
+  padding: 1.5rem;
+}
+
+/* Element Plus 样式优化 */
+.el-button--primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  transition: all 0.2s ease;
+}
+
+.el-button--primary:hover, 
+.el-button--primary:focus {
+  background-color: var(--primary-light) !important;
+  border-color: var(--primary-light) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+.el-button--success {
+  background-color: var(--success-color) !important;
+  border-color: var(--success-color) !important;
+}
+
+.el-button--success:hover {
+  background-color: var(--success-light) !important;
+  border-color: var(--success-light) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.el-button--warning {
+  background-color: var(--warning-color) !important;
+  border-color: var(--warning-color) !important;
+}
+
+.el-button--warning:hover {
+  background-color: var(--warning-light) !important;
+  border-color: var(--warning-light) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.el-button--danger {
+  background-color: var(--danger-color) !important;
+  border-color: var(--danger-color) !important;
+}
+
+.el-button--danger:hover {
+  background-color: var(--danger-light) !important;
+  border-color: var(--danger-light) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.el-input__inner:focus {
+  border-color: var(--primary-color) !important;
+}
+
+.el-menu--dark {
+  background-color: var(--background-dark) !important;
+}
+
+/* 表格样式优化 */
+.el-table {
+  --el-table-header-bg-color: #f8fafc !important;
+  --el-table-border-color: var(--border-color) !important;
+  --el-table-border: 1px solid var(--border-color) !important;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.el-table th {
+  font-weight: 600 !important;
+  color: var(--text-primary) !important;
+  background-color: #f8fafc !important;
+}
+
+.el-table tr:hover > td {
+  background-color: rgba(37, 99, 235, 0.04) !important;
+}
+
+.el-table__row td {
+  padding: 12px 0 !important;
+}
+
+.el-pagination {
+  margin-top: 20px;
+  justify-content: flex-end;
+}
+
+.el-pagination .el-pagination__total,
+.el-pagination .el-pagination__jump {
+  color: var(--text-secondary);
+}
+
+.el-pagination .el-pager li.is-active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* 卡片样式优化 */
+.el-card {
+  border-radius: var(--border-radius-lg) !important;
+  border: none !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+  overflow: hidden;
+}
+
+.el-card__header {
+  padding: 20px 24px !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  font-weight: 600;
+}
+
+/* 标签样式优化 */
+.el-tag {
+  border-radius: var(--border-radius) !important;
+  font-weight: 500;
+  padding: 0 8px !important;
 }
 
 #app {
@@ -65,9 +242,96 @@ button:focus-visible {
   text-align: left;
 }
 
+/* 操作按钮通用样式 */
+.operation-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.operation-button {
+  padding: 6px 12px;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.operation-button.primary {
+  background-color: var(--primary-color);
+}
+.operation-button.primary:hover {
+  background-color: var(--primary-light);
+  box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+}
+
+.operation-button.success {
+  background-color: var(--success-color);
+}
+.operation-button.success:hover {
+  background-color: var(--success-light);
+  box-shadow: 0 4px 8px rgba(16, 185, 129, 0.3);
+}
+
+.operation-button.warning {
+  background-color: var(--warning-color);
+}
+.operation-button.warning:hover {
+  background-color: var(--warning-light);
+  box-shadow: 0 4px 8px rgba(245, 158, 11, 0.3);
+}
+
+.operation-button.danger {
+  background-color: var(--danger-color);
+}
+.operation-button.danger:hover {
+  background-color: var(--danger-light);
+  box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+.operation-button.info {
+  background-color: var(--info-color);
+}
+.operation-button.info:hover {
+  background-color: var(--info-light);
+  box-shadow: 0 4px 8px rgba(99, 102, 241, 0.3);
+}
+
+/* 响应式断点 */
+@media (max-width: 768px) {
+  :root {
+    font-size: 14px;
+  }
+  
+  .operation-buttons {
+    flex-direction: column;
+  }
+  
+  .operation-button {
+    width: 100%;
+  }
+}
+
+/* 暗色主题 */
 @media (prefers-color-scheme: dark) {
   :root {
     color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
+    background-color: var(--background-dark);
+  }
+  
+  a {
+    color: var(--primary-light);
+  }
+  
+  a:hover {
+    color: white;
+  }
+  
+  .card {
+    background-color: #1e293b;
   }
 }

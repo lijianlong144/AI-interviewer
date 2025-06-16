@@ -8,6 +8,11 @@ import com.lijian.enums.InterviewStatusEnum;
 import com.lijian.exception.BusinessException;
 import com.lijian.mapper.InterviewMapper;
 import com.lijian.service.InterviewService;
+import com.lijian.dto.InterviewDTO;
+import com.lijian.entity.SysUser;
+import com.lijian.mapper.SysUserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -16,12 +21,16 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.UUID;
 
 /**
  * 面试服务实现类
  */
 @Service
 public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview> implements InterviewService {
+
+    @Autowired
+    private SysUserMapper sysUserMapper;
 
     @Override
     public Interview createInterview(Interview interview) {
@@ -39,19 +48,19 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
         if (!StringUtils.hasText(interview.getStatus())) {
             interview.setStatus(InterviewStatusEnum.PENDING.getCode());
         }
-
-        // 检查时间冲突
-        if (interview.getScheduledTime() != null) {
-            boolean hasConflict = checkTimeConflict(
-                    interview.getCandidateId(),
-                    interview.getInterviewerId(),
-                    interview.getScheduledTime(),
-                    60 // 默认预计1小时
-            );
-            if (hasConflict) {
-                throw new BusinessException("面试时间冲突，请选择其他时间");
-            }
-        }
+        // 因为没有面试官这个角色了，所以这段代码用不到了
+//        // 检查时间冲突
+//        if (interview.getScheduledTime() != null) {
+//            boolean hasConflict = checkTimeConflict(
+//                    interview.getCandidateId(),
+//                    interview.getInterviewerId(),
+//                    interview.getScheduledTime(),
+//                    60 // 默认预计1小时
+//            );
+//            if (hasConflict) {
+//                throw new BusinessException("面试时间冲突，请选择其他时间");
+//            }
+//        }
 
         save(interview);
         return interview;
@@ -113,7 +122,7 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
             throw new BusinessException("面试不存在");
         }
 
-        if (!InterviewStatusEnum.CONFIRMED.getCode().equals(interview.getStatus())) {
+        if (!InterviewStatusEnum.PENDING.getCode().equals(interview.getStatus())) {
             throw new BusinessException("只有待进行的面试才能开始");
         }
 
@@ -295,16 +304,32 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
 
     @Override
     public String generateRoomCode() {
-        // 生成6位随机房间号
+        // 生成6位数字作为中间部分
+        int randomDigits = new Random().nextInt(900000) + 100000; // 生成100000到999999之间的随机数
+        
+        // 生成8位随机字母数字混合字符串作为后缀
+        String alphabet = "abcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder();
         Random random = new Random();
-        int roomCode = 100000 + random.nextInt(900000);
-
-        // 检查房间号是否已存在
-        while (getByRoomCode(String.valueOf(roomCode)) != null) {
-            roomCode = 100000 + random.nextInt(900000);
+        for (int i = 0; i < 8; i++) {
+            sb.append(alphabet.charAt(random.nextInt(alphabet.length())));
         }
-
-        return String.valueOf(roomCode);
+        
+        // 组合成格式: IV-6位数字-8位字母数字
+        String roomCode = "IV-" + String.format("%06d", randomDigits) + "-" + sb.toString();
+        
+        // 检查房间号是否已存在
+        while (getByRoomCode(roomCode) != null) {
+            // 重新生成
+            randomDigits = new Random().nextInt(900000) + 100000;
+            sb = new StringBuilder();
+            for (int i = 0; i < 8; i++) {
+                sb.append(alphabet.charAt(random.nextInt(alphabet.length())));
+            }
+            roomCode = "IV-" + String.format("%06d", randomDigits) + "-" + sb.toString();
+        }
+        
+        return roomCode;
     }
 
     @Override
@@ -388,5 +413,177 @@ public class InterviewServiceImpl extends ServiceImpl<InterviewMapper, Interview
         String sequence = String.format("%04d", todayCount + 1);
 
         return "IV" + dateStr + sequence;
+    }
+
+    @Override
+    public boolean startInterviewByRoomCode(String roomCode) {
+        // 1. 根据roomCode查询面试信息
+        Interview interview = getByRoomCode(roomCode);
+        if (interview == null) {
+            throw new BusinessException("面试不存在，请检查房间号");
+        }
+        
+        // 2. 判断面试状态
+        String status = interview.getStatus();
+        if (InterviewStatusEnum.ONGOING.getCode().equals(status)) {
+            throw new BusinessException("面试已经开始，无需重复操作");
+        } else if (InterviewStatusEnum.COMPLETED.getCode().equals(status)) {
+            throw new BusinessException("面试已经结束，无法开始");
+        } else if (InterviewStatusEnum.CANCELLED.getCode().equals(status)) {
+            throw new BusinessException("面试已取消，无法开始");
+        }
+        
+        // 3. 调用现有的开始面试方法
+        return startInterview(interview.getId());
+    }
+
+    @Override
+    public boolean endInterviewByRoomCode(String roomCode) {
+        // 1. 根据roomCode查询面试信息
+        Interview interview = getByRoomCode(roomCode);
+        if (interview == null) {
+            throw new BusinessException("面试不存在，请检查房间号");
+        }
+        
+        // 2. 判断面试状态
+        String status = interview.getStatus();
+        if (InterviewStatusEnum.PENDING.getCode().equals(status)) {
+            throw new BusinessException("面试尚未开始，无法结束");
+        } else if (InterviewStatusEnum.COMPLETED.getCode().equals(status)) {
+            throw new BusinessException("面试已经结束，无需重复操作");
+        } else if (InterviewStatusEnum.CANCELLED.getCode().equals(status)) {
+            throw new BusinessException("面试已取消，无法结束");
+        }
+        
+        // 3. 调用现有的结束面试方法
+        return endInterview(interview.getId());
+    }
+
+    @Override
+    public Page<InterviewDTO> pageInterviewsWithCandidate(Page<InterviewDTO> page, String status, String position, 
+                                                       Long candidateId, Long interviewerId, String candidateName) {
+        // 1. 构建查询条件
+        LambdaQueryWrapper<Interview> queryWrapper = new LambdaQueryWrapper<>();
+        
+        if (StringUtils.hasText(status)) {
+            queryWrapper.eq(Interview::getStatus, status);
+        }
+        
+        if (StringUtils.hasText(position)) {
+            queryWrapper.like(Interview::getPosition, position);
+        }
+        
+        if (candidateId != null) {
+            queryWrapper.eq(Interview::getCandidateId, candidateId);
+        }
+        
+        // 按照用户要求，忽略interviewerId字段
+        
+        queryWrapper.orderByDesc(Interview::getScheduledTime);
+        
+        // 2. 如果提供了候选人姓名，先查询用户ID
+        if (StringUtils.hasText(candidateName)) {
+            LambdaQueryWrapper<SysUser> userQueryWrapper = new LambdaQueryWrapper<>();
+            userQueryWrapper.like(SysUser::getRealName, candidateName);
+            List<SysUser> users = sysUserMapper.selectList(userQueryWrapper);
+            if (!users.isEmpty()) {
+                List<Long> userIds = users.stream().map(SysUser::getId).collect(Collectors.toList());
+                queryWrapper.in(Interview::getCandidateId, userIds);
+            } else {
+                // 如果没有找到匹配的用户，返回空结果
+                return new Page<>(page.getCurrent(), page.getSize(), 0);
+            }
+        }
+        
+        // 3. 执行分页查询
+        Page<Interview> interviewPage = new Page<>(page.getCurrent(), page.getSize());
+        Page<Interview> resultPage = page(interviewPage, queryWrapper);
+        
+        // 4. 转换为DTO并填充候选人姓名
+        Page<InterviewDTO> dtoPage = new Page<>(
+            resultPage.getCurrent(), 
+            resultPage.getSize(), 
+            resultPage.getTotal()
+        );
+        
+        if (resultPage.getRecords().isEmpty()) {
+            dtoPage.setRecords(new ArrayList<>());
+            return dtoPage;
+        }
+        
+        // 5. 获取所有候选人ID
+        List<Long> candidateIds = resultPage.getRecords().stream()
+            .map(Interview::getCandidateId)
+            .filter(Objects::nonNull)
+            .distinct()
+            .collect(Collectors.toList());
+        
+        // 6. 批量查询候选人信息
+        final Map<Long, String> candidateNameMap = new HashMap<>();
+        if (!candidateIds.isEmpty()) {
+            LambdaQueryWrapper<SysUser> userQueryWrapper = new LambdaQueryWrapper<>();
+            userQueryWrapper.in(SysUser::getId, candidateIds);
+            List<SysUser> candidates = sysUserMapper.selectList(userQueryWrapper);
+            
+            candidateNameMap.putAll(candidates.stream()
+                .collect(Collectors.toMap(SysUser::getId, SysUser::getRealName)));
+        }
+        
+        // 7. 转换并设置候选人姓名
+        List<InterviewDTO> dtoList = resultPage.getRecords().stream().map(interview -> {
+            InterviewDTO dto = new InterviewDTO();
+            BeanUtils.copyProperties(interview, dto);
+            
+            // 设置候选人姓名
+            if (interview.getCandidateId() != null) {
+                dto.setCandidateName(candidateNameMap.getOrDefault(interview.getCandidateId(), ""));
+            }
+            
+            return dto;
+        }).collect(Collectors.toList());
+        
+        dtoPage.setRecords(dtoList);
+        return dtoPage;
+    }
+
+    @Override
+    public Page<Interview> pageCandidateInterviews(Page<Interview> page, Long candidateId, String status, 
+                                                 String keyword, String startDate, String endDate) {
+        // 构建查询条件
+        LambdaQueryWrapper<Interview> queryWrapper = new LambdaQueryWrapper<>();
+        
+        // 根据候选人ID查询
+        queryWrapper.eq(Interview::getCandidateId, candidateId);
+        
+        // 根据状态筛选
+        if (StringUtils.hasText(status)) {
+            queryWrapper.eq(Interview::getStatus, status);
+        }
+        
+        // 根据关键词搜索（面试编号或职位）
+        if (StringUtils.hasText(keyword)) {
+            queryWrapper.and(wrapper -> 
+                wrapper.like(Interview::getInterviewNo, keyword)
+                       .or()
+                       .like(Interview::getPosition, keyword)
+            );
+        }
+        
+        // 根据日期范围筛选
+        if (StringUtils.hasText(startDate)) {
+            LocalDate start = LocalDate.parse(startDate);
+            queryWrapper.ge(Interview::getScheduledTime, start.atStartOfDay());
+        }
+        
+        if (StringUtils.hasText(endDate)) {
+            LocalDate end = LocalDate.parse(endDate);
+            queryWrapper.le(Interview::getScheduledTime, end.plusDays(1).atStartOfDay());
+        }
+        
+        // 按预约时间降序排序
+        queryWrapper.orderByDesc(Interview::getScheduledTime);
+        
+        // 执行分页查询
+        return page(page, queryWrapper);
     }
 }

@@ -1,31 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="fastRequestCurrentParamGroup">
-    <option name="clasDescription" value="面试流程控制器" />
-    <option name="className" value="com.lijian.controller.InterviewProcessController" />
+    <option name="clasDescription" value="面试管理控制器" />
+    <option name="className" value="com.lijian.controller.InterviewAIController" />
     <option name="filePath" value="" />
-    <option name="method" value="confirmInterview" />
-    <option name="methodDescription" value="候选人确认面试" />
-    <option name="methodType" value="PUT" />
+    <option name="method" value="saveAnswer" />
+    <option name="methodDescription" value="保存面试回答" />
+    <option name="methodType" value="POST" />
     <option name="module" value="web" />
-    <option name="originUrl" value="/api/interview-process/confirm/{interviewId}" />
-    <option name="pathParamMap">
+    <option name="originUrl" value="/api/ai/interview/save-answer" />
+    <option name="requestParamMap">
       <map>
+        <entry key="answerContent">
+          <value>
+            <Object />
+          </value>
+        </entry>
+        <entry key="answerDuration">
+          <value>
+            <Object />
+          </value>
+        </entry>
         <entry key="interviewId">
           <value>
             <Object />
           </value>
         </entry>
-      </map>
-    </option>
-    <option name="requestParamMap">
-      <map>
-        <entry key="confirmed">
+        <entry key="interviewQuestionId">
           <value>
             <Object />
           </value>
         </entry>
-        <entry key="reason">
+        <entry key="thinkDuration">
           <value>
             <Object />
           </value>
@@ -41,7 +47,7 @@
         </entry>
       </map>
     </option>
-    <option name="returnDocument" value="{&quot;success&quot;:&quot;是否成功&quot;,&quot;code&quot;:&quot;状态码&quot;,&quot;message&quot;:&quot;消息&quot;,&quot;data&quot;:{&quot;java.lang.Boolean&quot;:&quot;No comment,Type =Boolean&quot;}}" />
-    <option name="url" value="/api/interview-process/confirm/1" />
+    <option name="returnDocument" value="{&quot;success&quot;:&quot;是否成功&quot;,&quot;code&quot;:&quot;状态码&quot;,&quot;message&quot;:&quot;消息&quot;,&quot;data&quot;:{}}" />
+    <option name="url" value="/api/ai/interview/save-answer" />
   </component>
 </project>

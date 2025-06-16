@@ -271,13 +271,22 @@ const confirmScreen = async () => {
   try {
     screenLoading.value = true
 
-    await updateApplicationStatus(
+    const response = await updateApplicationStatus(
         applicationId,
         screenStatus.value,
         screenForm.remark
     )
 
-    ElMessage.success(screenStatus.value === 'PASSED' ? '已通过初筛' : '已拒绝申请')
+    if (screenStatus.value === 'PASSED') {
+      ElMessage({
+        message: '已通过初筛，系统已自动创建面试',
+        type: 'success',
+        duration: 3000
+      })
+    } else {
+      ElMessage.success('已拒绝申请')
+    }
+    
     screenDialogVisible.value = false
 
     // 刷新页面

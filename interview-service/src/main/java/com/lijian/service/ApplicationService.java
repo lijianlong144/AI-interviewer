@@ -3,6 +3,7 @@ package com.lijian.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lijian.entity.Application;
+import com.lijian.entity.dto.ApplicationDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,17 @@ public interface ApplicationService extends IService<Application> {
      * @return 申请分页列表
      */
     Page<Application> pageApplications(Page<Application> page, Long candidateId, Long positionId, String status);
+    
+    /**
+     * 分页查询申请列表，包含职位名称和候选人姓名
+     * @param page 分页参数
+     * @param candidateId 候选人ID
+     * @param candidateName 候选人姓名
+     * @param positionId 职位ID
+     * @param status 状态
+     * @return 申请分页列表
+     */
+    Page<ApplicationDTO> pageApplicationsWithDetails(Page<Application> page, Long candidateId, String candidateName, Long positionId, String status);
 
     /**
      * 获取候选人的所有申请

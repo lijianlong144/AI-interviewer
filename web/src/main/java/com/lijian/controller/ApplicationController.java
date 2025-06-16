@@ -2,6 +2,7 @@ package com.lijian.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.lijian.entity.Application;
+import com.lijian.entity.dto.ApplicationDTO;
 import com.lijian.result.Result;
 import com.lijian.service.ApplicationService;
 import com.lijian.utils.SecurityUtils;
@@ -90,13 +91,14 @@ public class ApplicationController {
      * 分页查询申请列表（HR操作）
      */
     @GetMapping("/page")
-    public Result<Page<Application>> pageApplications(@RequestParam(value = "current", defaultValue = "1") Integer current,
+    public Result<Page<ApplicationDTO>> pageApplications(@RequestParam(value = "current", defaultValue = "1") Integer current,
                                                      @RequestParam(value = "size", defaultValue = "10") Integer size,
                                                      @RequestParam(value = "candidateId", required = false) Long candidateId,
+                                                     @RequestParam(value = "candidateName", required = false) String candidateName,
                                                      @RequestParam(value = "positionId", required = false) Long positionId,
                                                      @RequestParam(value = "status", required = false) String status) {
         Page<Application> page = new Page<>(current, size);
-        Page<Application> resultPage = applicationService.pageApplications(page, candidateId, positionId, status);
+        Page<ApplicationDTO> resultPage = applicationService.pageApplicationsWithDetails(page, candidateId, candidateName, positionId, status);
         return Result.success(resultPage);
     }
 

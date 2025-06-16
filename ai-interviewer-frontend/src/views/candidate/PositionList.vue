@@ -38,6 +38,9 @@
         <el-form-item>
           <el-button type="primary" @click="handleSearch">搜索</el-button>
           <el-button @click="resetSearch">重置</el-button>
+          <el-button type="success" @click="handleRefresh">
+            <el-icon><Refresh /></el-icon> 刷新
+          </el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -109,10 +112,11 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, onActivated } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { getPositionPage } from '@/api/position'
+import { Refresh } from '@element-plus/icons-vue'
 import dayjs from 'dayjs'
 
 const router = useRouter()
@@ -213,7 +217,9 @@ const loadPositions = async () => {
     const params = {
       current: currentPage.value,
       size: pageSize.value,
-      status: 1 // 只查询招聘中的职位
+      status: 1, // 只查询招聘中的职位
+      // 添加时间戳参数，避免请求被缓存
+      _t: Date.now()
     }
     
     // 添加搜索条件
@@ -241,7 +247,26 @@ const loadPositions = async () => {
   }
 }
 
+// 刷新数据
+const handleRefresh = async () => {
+  // 重置页码到第一页
+  currentPage.value = 1
+  
+  // 清除可能的缓存影响
+  positionList.value = []
+  total.value = 0
+  
+  // 重新加载数据
+  await loadPositions()
+}
+
 onMounted(() => {
+  loadPositions()
+})
+
+// 当组件被缓存后重新激活时也重新加载数据
+onActivated(() => {
+  console.log('组件激活，重新加载职位数据')
   loadPositions()
 })
 </script>

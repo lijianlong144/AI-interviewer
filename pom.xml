@@ -16,10 +16,10 @@
   <name>AI-interviewer</name>
   <url>http://127.0.0.1:8080</url>
 
-  <!-- 项目属性定义 -->
+  <!-- 项目属性定�?-->
   <properties>
     <java.version>17</java.version>
-    <!-- 项目版本号 -->
+    <!-- 项目版本�?-->
     <revision>1.0.0</revision>
 
     <!-- 基本配置 -->
@@ -29,10 +29,11 @@
     <maven.compiler.target>17</maven.compiler.target>
 
     <!-- Spring AI版本 -->
-    <spring-ai.version>1.0.0-M6</spring-ai.version>
+<!--    <spring-ai.version>1.0.0-M6</spring-ai.version>-->
+    <spring-ai.version>1.0.0</spring-ai.version>
 
     <!-- Spring AI Alibaba版本 -->
-    <spring-ai-alibaba.version>1.0.0-M6.1</spring-ai-alibaba.version>
+    <spring-ai-alibaba.version>1.0.0.2</spring-ai-alibaba.version>
 
     <!-- Spring Boot版本 -->
     <spring-boot.version>3.4.0</spring-boot.version>
@@ -44,6 +45,9 @@
     <jwt.version>0.11.5</jwt.version>
 
     <fastjson.version>2.0.46</fastjson.version>
+    
+    <!-- Druid版本 -->
+    <druid.version>1.2.21</druid.version>
 
     <!-- Maven插件版本 -->
     <maven-deploy-plugin.version>3.1.1</maven-deploy-plugin.version>
@@ -51,7 +55,7 @@
     <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
   </properties>
 
-  <!-- 子模块定义 -->
+  <!-- 子模块定?-->
   <modules>
     <module>common</module>
     <module>interview-service</module>
@@ -68,7 +72,51 @@
   <!-- 依赖管理 -->
   <dependencyManagement>
     <dependencies>
-      <!-- 在 dependencyManagement 中添加 -->
+      <dependency>
+        <groupId>com.alibaba.cloud.ai</groupId>
+        <artifactId>spring-ai-alibaba-bom</artifactId>
+        <version>${spring-ai-alibaba.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+
+      <!-- DashScope支持（阿里云AI平台?-->
+      <dependency>
+        <groupId>com.alibaba.cloud.ai</groupId>
+        <artifactId>spring-ai-alibaba-starter-dashscope</artifactId>
+        <version>${spring-ai-alibaba.version}</version>
+      </dependency>
+
+      <!-- 记忆管理核心 -->
+      <dependency>
+        <groupId>com.alibaba.cloud.ai</groupId>
+        <artifactId>spring-ai-alibaba-starter-memory</artifactId>
+        <version>${spring-ai-alibaba.version}</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.alibaba.cloud.ai</groupId>
+        <artifactId>spring-ai-alibaba-starter-memory-redis</artifactId>
+        <version>${spring-ai-alibaba.version}</version>
+      </dependency>
+      <!-- Jedis客户?-->
+      <dependency>
+        <groupId>redis.clients</groupId>
+        <artifactId>jedis</artifactId>
+        <version>5.2.0</version>
+      </dependency>
+      
+      <!-- Druid数据库连接池 -->
+      <dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>druid-spring-boot-3-starter</artifactId>
+        <version>1.2.25</version>
+      </dependency>
+
+
+
+      <!--?dependencyManagement 中添?-->
       <dependency>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-mail</artifactId>
@@ -104,7 +152,7 @@
         <version>${revision}</version>
       </dependency>
 
-      <!-- Lombok依赖（已注释） -->
+      <!-- Lombok依赖（已注释?-->
       <!--    <dependency>-->
       <!--      <groupId>org.projectlombok</groupId>-->
       <!--      <artifactId>lombok</artifactId>-->
@@ -154,6 +202,14 @@
         <version>${mybatis-plus.version}</version>
       </dependency>
 
+      <!-- 添加 Lombok 依赖管理 -->
+      <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.30</version>
+        <scope>provided</scope>
+      </dependency>
+
       <!-- Redis依赖 -->
       <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -192,13 +248,13 @@
         <configuration>
           <release>${java.version}</release>
           <compilerArgs>
-            <!-- 保留方法参数名 -->
+            <!-- 保留方法参数�?-->
             <compilerArg>-parameters</compilerArg>
           </compilerArgs>
         </configuration>
       </plugin>
 
-      <!-- Maven扁平化插件 - 处理版本变量 -->
+      <!-- Maven扁平化插�?- 处理版本变量 -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>flatten-maven-plugin</artifactId>
@@ -243,7 +299,7 @@
       <id>snapshots</id>
       <url>https://central.sonatype.com/repository/maven-snapshots/</url>
     </repository>
-    <!-- Spring里程碑版本仓库 -->
+    <!-- Spring里程碑版本仓�?-->
     <repository>
       <id>spring-milestones</id>
       <name>Spring Milestones</name>
@@ -263,7 +319,7 @@
       </releases>
     </repository>
 
-    <!-- Sonatype开源仓库 -->
+    <!-- Sonatype开源仓�?-->
     <repository>
       <id>sonatype</id>
       <name>OSS Sonatype</name>
@@ -286,7 +342,7 @@
 
   <!-- 插件仓库配置 -->
   <pluginRepositories>
-    <!-- 阿里云插件仓库 -->
+    <!-- 阿里云插件仓�?-->
     <pluginRepository>
       <id>public</id>
       <name>aliyun nexus</name>

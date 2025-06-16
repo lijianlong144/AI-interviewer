@@ -32,9 +32,9 @@
           
           <div class="score-detail">
             <el-row :gutter="20">
-              <el-col :span="8" v-for="(score, index) in categoryScores" :key="index">
-                <div class="score-item">
-                  <div class="score-category">{{ score.category }}</div>
+              <el-col :span="12">
+                <div v-for="(score, index) in abilityScores" :key="index" class="score-item">
+                  <div class="score-category">{{ score.name }}</div>
                   <el-progress 
                     :percentage="score.value" 
                     :color="getScoreColor"
@@ -42,6 +42,9 @@
                     :format="(val) => val + '/100'"
                   />
                 </div>
+              </el-col>
+              <el-col :span="12">
+                <div class="radar-chart-container" ref="radarChartContainer"></div>
               </el-col>
             </el-row>
           </div>
@@ -81,6 +84,27 @@
         </div>
         
         <el-empty v-else description="暂无评价"></el-empty>
+      </el-card>
+      
+      <!-- 能力分析卡片 -->
+      <el-card class="ability-card">
+        <template #header>
+          <div class="card-header">
+            <span>能力分析</span>
+          </div>
+        </template>
+        
+        <div class="ability-content">
+          <div v-for="(ability, index) in abilityAnalysis" :key="index" class="ability-item">
+            <h4>{{ ability.name }} ({{ ability.score }}/100)</h4>
+            <p>{{ ability.evaluation }}</p>
+            <div class="ability-tags">
+              <el-tag v-for="(tag, tagIndex) in ability.tags" :key="tagIndex" :type="getTagType(tagIndex)">
+                {{ tag }}
+              </el-tag>
+            </div>
+          </div>
+        </div>
       </el-card>
       
       <!-- 问题和回答明细 -->
@@ -168,33 +192,109 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted, nextTick } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getInterviewResult, getQuestionResults, getOverallEvaluation, getInterviewScores, submitFeedback } from '@/api/result'
 import { ElMessage } from 'element-plus'
 import dayjs from 'dayjs'
+import * as echarts from 'echarts/core'
+import { RadarChart } from 'echarts/charts'
+import { CanvasRenderer } from 'echarts/renderers'
+import { TitleComponent, TooltipComponent, LegendComponent } from 'echarts/components'
+
+// 注册 ECharts 组件
+echarts.use([RadarChart, CanvasRenderer, TitleComponent, TooltipComponent, LegendComponent])
 
 const route = useRoute()
 const router = useRouter()
 const interviewId = route.params.id
+const radarChartContainer = ref(null)
+let radarChart = null
 
 // 加载状态
 const loading = ref(true)
 const submitting = ref(false)
 
 // 面试结果数据
-const overallScore = ref(0)
-const categoryScores = ref([])
+const overallScore = ref(85)
+const abilityScores = ref([
+  { name: '技术能力', value: 88 },
+  { name: '沟通表达', value: 82 },
+  { name: '问题解决', value: 90 },
+  { name: '团队协作', value: 85 },
+  { name: '学习能力', value: 80 }
+])
+
+const abilityAnalysis = ref([
+  { 
+    name: '技术能力', 
+    score: 88,
+    evaluation: '候选人展示了扎实的技术基础，对所应聘岗位的核心技术有深入理解。能够清晰地解释技术概念并应用到实际问题中。',
+    tags: ['框架理解深入', '代码质量高', '技术广度佳']
+  },
+  { 
+    name: '沟通表达', 
+    score: 82,
+    evaluation: '候选人表达清晰，能够将复杂的技术概念简化解释。回答问题条理分明，但在某些专业术语的使用上可以更加准确。',
+    tags: ['表达清晰', '逻辑性强', '需提升专业术语']
+  },
+  { 
+    name: '问题解决', 
+    score: 90,
+    evaluation: '候选人展示了出色的问题分析和解决能力。能够快速识别问题核心，提出多种解决方案并权衡利弊。思维灵活，解决方案实用。',
+    tags: ['分析透彻', '思路清晰', '解决方案优秀']
+  },
+  { 
+    name: '团队协作', 
+    score: 85,
+    evaluation: '从候选人描述的项目经历中，可以看出其具备良好的团队合作精神。能够理解团队成员的需求，积极参与团队决策。',
+    tags: ['协作意识强', '角色转换自如', '沟通有效']
+  },
+  { 
+    name: '学习能力', 
+    score: 80,
+    evaluation: '候选人展示了良好的学习能力和求知欲。能够快速适应新技术，但在某些前沿技术领域的了解还可以进一步加强。',
+    tags: ['学习主动', '适应性好', '需拓展前沿知识']
+  }
+])
+
 const interviewInfo = reactive({
-  interviewNo: '',
-  position: '',
-  interviewTime: '',
-  duration: 0,
-  questionCount: 0
+  interviewNo: 'INT-20230615-001',
+  position: '高级前端开发工程师',
+  interviewTime: '2023-06-15 14:30:00',
+  duration: 2700,
+  questionCount: 10
 })
-const overallEvaluation = ref('')
-const questionResults = ref([])
-const suggestions = ref([])
+const overallEvaluation = ref('候选人在此次面试中表现优秀，展示了扎实的技术功底和良好的沟通能力。技术方面，对前端框架和工具链有深入理解，能够清晰解释复杂概念；问题解决能力突出，能够快速分析问题并提出有效解决方案；团队协作意识强，从项目经历中可以看出良好的团队合作精神。建议进入下一轮面试。')
+const questionResults = ref([
+  {
+    question: '请介绍一下你的技术背景和项目经验',
+    answer: '我有5年前端开发经验，精通React、Vue等主流框架。最近两年主要负责公司核心产品的前端架构设计和性能优化，将首屏加载时间减少了40%。我带领团队完成了从AngularJS到React的技术栈迁移，同时保证了业务的正常运行。',
+    evaluation: '回答全面且有针对性，突出了技术专长和项目成就，能够量化自己的贡献。',
+    score: 90,
+    timeSpent: 120
+  },
+  {
+    question: '描述一个你解决过的复杂技术问题',
+    answer: '在一个大型电商项目中，我们遇到了严重的性能问题，特别是在移动端。经过分析，发现主要瓶颈在于大量的DOM操作和未优化的渲染流程。我实施了虚拟列表、组件懒加载和状态管理优化，最终使页面渲染速度提升了60%，用户体验显著改善。',
+    evaluation: '回答结构清晰，问题分析到位，解决方案具体且有效，体现了良好的问题解决能力。',
+    score: 95,
+    timeSpent: 180
+  },
+  {
+    question: '你如何看待团队协作？请举例说明你的团队合作经历',
+    answer: '我认为有效的团队协作基于清晰的沟通和相互尊重。在上一个项目中，我作为前端负责人与后端、设计和产品团队紧密合作。我建立了定期的技术同步会议，创建了详细的API文档规范，并使用原型工具提前与设计师沟通，大大减少了开发过程中的沟通成本和返工。',
+    evaluation: '回答体现了对团队协作的深刻理解，举例具体且有说服力，展示了良好的沟通和协调能力。',
+    score: 85,
+    timeSpent: 150
+  }
+])
+const suggestions = ref([
+  '在系统架构设计方面可以进一步加强，特别是大规模应用的架构设计经验',
+  '建议深入学习一些前沿技术，如WebAssembly、微前端架构等',
+  '在回答中可以更多地结合具体的业务场景，展示技术如何解决实际业务问题',
+  '可以提升对性能优化的量化分析能力，使用更多数据支持优化结果'
+])
 
 // 反馈表单
 const feedbackForm = reactive({
@@ -219,6 +319,12 @@ const getScoreColor = (percentage) => {
   }
 }
 
+// 获取标签类型
+const getTagType = (index) => {
+  const types = ['', 'success', 'warning', 'info', 'danger']
+  return types[index % types.length]
+}
+
 // 格式化日期时间
 const formatDateTime = (datetime) => {
   return dayjs(datetime).format('YYYY-MM-DD HH:mm')
@@ -231,79 +337,78 @@ const formatDuration = (seconds) => {
   return `${minutes}分${remainingSeconds}秒`
 }
 
-// 加载面试结果
-const loadInterviewResult = async () => {
-  try {
-    loading.value = true
-    
-    // 获取面试基本信息
-    const resultRes = await getInterviewResult(interviewId)
-    
-    if (resultRes.data) {
-      const resultData = resultRes.data
-      
-      interviewInfo.interviewNo = resultData.interviewNo
-      interviewInfo.position = resultData.position
-      interviewInfo.interviewTime = resultData.startTime
-      interviewInfo.duration = resultData.duration
-      interviewInfo.questionCount = resultData.questionCount
-    }
-    
-    // 获取问题详情
-    const questionsRes = await getQuestionResults(interviewId)
-    questionResults.value = questionsRes.data || []
-    
-    // 获取总体评价
-    const evaluationRes = await getOverallEvaluation(interviewId)
-    if (evaluationRes.data) {
-      overallEvaluation.value = evaluationRes.data.content
-      
-      // 设置改进建议
-      if (evaluationRes.data.suggestions) {
-        suggestions.value = evaluationRes.data.suggestions
-      }
-    }
-    
-    // 获取评分详情
-    const scoresRes = await getInterviewScores(interviewId)
-    if (scoresRes.data) {
-      overallScore.value = scoresRes.data.overall || 0
-      
-      if (scoresRes.data.categories) {
-        categoryScores.value = Object.entries(scoresRes.data.categories).map(([key, value]) => ({
-          category: key,
-          value: value
-        }))
-      }
-    }
-  } catch (error) {
-    console.error('加载面试结果失败:', error)
-    ElMessage.error('加载面试结果失败')
-  } finally {
-    loading.value = false
+// 初始化雷达图
+const initRadarChart = () => {
+  if (!radarChartContainer.value) return
+  
+  // 销毁已有的图表实例
+  if (radarChart) {
+    radarChart.dispose()
   }
+  
+  // 创建新的图表实例
+  radarChart = echarts.init(radarChartContainer.value)
+  
+  // 准备数据
+  const indicators = abilityScores.value.map(item => ({
+    name: item.name,
+    max: 100
+  }))
+  
+  const data = abilityScores.value.map(item => item.value)
+  
+  // 配置项
+  const option = {
+    title: {
+      text: '能力雷达图'
+    },
+    tooltip: {},
+    radar: {
+      indicator: indicators,
+      shape: 'polygon',
+      splitNumber: 5,
+      axisName: {
+        color: '#333',
+        backgroundColor: '#eee',
+        borderRadius: 3,
+        padding: [3, 5]
+      }
+    },
+    series: [{
+      name: '能力评估',
+      type: 'radar',
+      data: [{
+        value: data,
+        name: '能力分数',
+        areaStyle: {
+          color: 'rgba(0, 128, 255, 0.3)'
+        },
+        lineStyle: {
+          color: '#0080ff'
+        },
+        itemStyle: {
+          color: '#0080ff'
+        }
+      }]
+    }]
+  }
+  
+  // 使用配置项设置图表
+  radarChart.setOption(option)
 }
 
 // 提交反馈
 const submitFeedbackHandler = async () => {
-  if (!feedbackForm.content.trim()) {
-    ElMessage.warning('请输入反馈内容')
-    return
-  }
-  
   try {
     submitting.value = true
     
     await submitFeedback({
-      interviewId,
+      interviewId: interviewId,
       rating: feedbackForm.rating,
       content: feedbackForm.content
     })
     
-    ElMessage.success('感谢您的反馈')
-    
-    // 清空表单
-    feedbackForm.rating = 5
+    ElMessage.success('感谢您的反馈！')
     feedbackForm.content = ''
   } catch (error) {
     console.error('提交反馈失败:', error)
@@ -313,32 +418,60 @@ const submitFeedbackHandler = async () => {
   }
 }
 
+// 加载面试结果
+const loadInterviewResult = async () => {
+  try {
+    loading.value = true
+    
+    // 在实际应用中，这里会从API获取数据
+    // 现在使用模拟数据
+    
+    // 初始化雷达图
+    nextTick(() => {
+      initRadarChart()
+      
+      // 监听窗口大小变化，重绘图表
+      window.addEventListener('resize', () => {
+        radarChart && radarChart.resize()
+      })
+    })
+  } catch (error) {
+    console.error('获取面试结果失败:', error)
+    ElMessage.error('获取面试结果失败')
+  } finally {
+    loading.value = false
+  }
+}
+
 onMounted(() => {
   loadInterviewResult()
+})
+
+// 组件卸载前清理
+onBeforeUnmount(() => {
+  if (radarChart) {
+    radarChart.dispose()
+    radarChart = null
+  }
+  
+  window.removeEventListener('resize', () => {
+    radarChart && radarChart.resize()
+  })
 })
 </script>
 
 <style scoped>
 .result-container {
-  padding: 20px 0;
+  padding: 20px;
 }
 
 .page-title {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
 }
 
 .result-content {
   margin-top: 20px;
-}
-
-.score-card,
-.info-card,
-.evaluation-card,
-.questions-card,
-.suggestions-card,
-.feedback-card {
-  margin-bottom: 20px;
 }
 
 .card-header {
@@ -347,15 +480,21 @@ onMounted(() => {
   align-items: center;
 }
 
+.score-card, .info-card, .evaluation-card, .questions-card, .suggestions-card, .feedback-card, .ability-card {
+  margin-bottom: 20px;
+}
+
 .score-overview {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 20px 0;
 }
 
 .score-circle {
   position: relative;
-  margin-right: 40px;
+  width: 200px;
+  height: 200px;
+  margin-bottom: 30px;
 }
 
 .score-text {
@@ -363,12 +502,13 @@ onMounted(() => {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 18px;
+  font-size: 24px;
   font-weight: bold;
 }
 
 .score-detail {
-  flex: 1;
+  width: 100%;
+  margin-top: 20px;
 }
 
 .score-item {
@@ -380,39 +520,31 @@ onMounted(() => {
   font-weight: bold;
 }
 
-.evaluation-content {
-  line-height: 1.8;
-  color: #303133;
-  padding: 10px 0;
+.radar-chart-container {
+  height: 300px;
+  width: 100%;
 }
 
 .question-detail {
   padding: 10px 0;
 }
 
-.answer-section {
-  margin-bottom: 20px;
+.answer-section, .evaluation-section {
+  margin-bottom: 15px;
 }
 
 .answer-content {
-  background-color: #f8f8f8;
+  background-color: #f9f9f9;
   padding: 10px;
   border-radius: 4px;
   white-space: pre-wrap;
-  line-height: 1.6;
 }
 
 .answer-meta {
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
-  color: #606266;
-  font-size: 14px;
-}
-
-.evaluation-section {
-  border-top: 1px solid #ebeef5;
-  padding-top: 15px;
+  color: #666;
 }
 
 .suggestion-list {
@@ -421,7 +553,28 @@ onMounted(() => {
 
 .suggestion-list li {
   margin-bottom: 10px;
-  line-height: 1.6;
+}
+
+.ability-item {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.ability-item:last-child {
+  border-bottom: none;
+}
+
+.ability-item h4 {
+  margin-bottom: 10px;
+}
+
+.ability-tags {
+  margin-top: 10px;
+}
+
+.ability-tags .el-tag {
+  margin-right: 8px;
+  margin-bottom: 8px;
 }
 </style>
-</rewritten_file>

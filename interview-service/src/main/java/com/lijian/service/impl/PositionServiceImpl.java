@@ -82,7 +82,8 @@ public class PositionServiceImpl extends ServiceImpl<PositionMapper, Position> i
         // 按优先级和发布时间排序
         queryWrapper.orderByDesc(Position::getPriority, Position::getPublishTime);
         
-        return page(page, queryWrapper);
+        // 使用baseMapper直接查询，避免可能的缓存问题
+        return baseMapper.selectPage(page, queryWrapper);
     }
 
     @Override

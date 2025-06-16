@@ -72,9 +72,6 @@ public class ResumeController {
             return Result.failure("无权操作此简历");
 //            return Result.fail("无权操作此简历");
         }
-
-//        logger.info(existingResume == null || !existingResume.getCandidateId().equals(currentUserId));
-
         boolean result = resumeService.updateResume(resume);
         return Result.success(result);
     }

@@ -80,42 +80,44 @@
             </el-tag>
           </template>
         </el-table-column>
-        <el-table-column label="操作" fixed="right" width="180" align="center">
+        <el-table-column label="操作" fixed="right" min-width="280" align="center">
           <template #default="scope">
-            <el-button
-              link
-              type="primary"
-              size="small"
-              @click="handleEdit(scope.row)"
-            >
-              编辑
-            </el-button>
-            <el-button
-              v-if="scope.row.status === 1"
-              link
-              type="danger"
-              size="small"
-              @click="handleStatusChange(scope.row, 0)"
-            >
-              禁用
-            </el-button>
-            <el-button
-              v-else
-              link
-              type="success"
-              size="small"
-              @click="handleStatusChange(scope.row, 1)"
-            >
-              启用
-            </el-button>
-            <el-button
-              link
-              type="warning"
-              size="small"
-              @click="handleResetPassword(scope.row)"
-            >
-              重置密码
-            </el-button>
+            <div class="action-buttons">
+              <el-button
+                size="small"
+                type="warning"
+                @click="handleEdit(scope.row)"
+              >
+                <el-icon><Edit /></el-icon>
+                编辑
+              </el-button>
+              <el-button
+                v-if="scope.row.status === 1"
+                size="small"
+                type="danger"
+                @click="handleStatusChange(scope.row, 0)"
+              >
+                <el-icon><CircleClose /></el-icon>
+                禁用
+              </el-button>
+              <el-button
+                v-else
+                size="small"
+                type="success"
+                @click="handleStatusChange(scope.row, 1)"
+              >
+                <el-icon><Check /></el-icon>
+                启用
+              </el-button>
+              <el-button
+                size="small"
+                type="info"
+                @click="handleResetPassword(scope.row)"
+              >
+                <el-icon><Key /></el-icon>
+                重置密码
+              </el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -218,6 +220,7 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import request from '@/utils/request'
 import dayjs from 'dayjs'
 import { getUserPage, updateUserInfo, updateUserStatus, changePassword } from '@/api/user'
+import { Search, Edit, Check, CircleClose, Key } from '@element-plus/icons-vue'
 
 // 搜索条件
 const searchKeyword = ref('')
@@ -534,5 +537,22 @@ onMounted(() => {
   display: flex;
   justify-content: flex-end;
   width: 100%;
+}
+
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.action-buttons .el-button {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 10px;
+  font-size: 12px;
 }
 </style> 

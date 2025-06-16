@@ -1,0 +1,21 @@
+#spring:
+#  ai:
+#    openai:
+#      api-key: sk-3MWinCx75ulajFH7xPeYkw8SowSOgXsZ9kXYkf2xK5JKBI1l
+##      base-url: https://newapi.371723.xyz/v1/chat/completions
+#      base-url: https://newapi.371723.xyz
+#      chat:
+#        options:
+#          model: gemini-2.5-flash-preview-05-20
+
+
+
+spring:
+  ai:
+    openai:
+      api-key: sk-3MWinCx75ulajFH7xPeYkw8SowSOgXsZ9kXYkf2xK5JKBI1l
+      base-url: https://newapi.371723.xyz
+      chat:
+        options:
+          model: gemini-2.5-flash-preview-05-20
+#          model: gemini-2.0-flash-lite
